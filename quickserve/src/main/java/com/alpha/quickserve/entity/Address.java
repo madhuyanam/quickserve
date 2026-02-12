@@ -64,45 +64,24 @@ public class Address {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-
-
-
 	public String getStreet() {
 		return street;
 	}
-
-
-
 	public void setStreet(String street) {
 		this.street = street;
 	}
-
-
-
 	public String getLandmark() {
 		return landmark;
 	}
-
-
-
 	public void setLandmark(String landmark) {
 		this.landmark = landmark;
 	}
-
-
-
 	public int getPincode() {
 		return pincode;
 	}
-
-
-
 	public void setPincode(int pincode) {
 		this.pincode = pincode;
 	}
-
-
-
 	public Address(int id, String city, String state, String country, String street, String landmark, int pincode) {
 		super();
 		this.id = id;
@@ -113,15 +92,9 @@ public class Address {
 		this.landmark = landmark;
 		this.pincode = pincode;
 	}
-
-
-
 	public Address() {
 		super();
 	}
-
-
-
 	@Override
 	public String toString() {
 		return "Address [id=" + id + ", city=" + city + ", state=" + state + ", country=" + country + ", street="
