@@ -3,8 +3,8 @@ package com.alpha.quickserve.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.alpha.quickserve.entity.Item;
+import com.alpha.quickserve.entity.Order;
 @Repository
-public interface ItemRepo extends JpaRepository<Item, Integer> {
+public interface OrderRepo extends JpaRepository<Order, Integer>{
 
 }
