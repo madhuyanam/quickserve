@@ -6,10 +6,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "orders")
 public class Order {
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
@@ -17,15 +23,24 @@ public class Order {
 	private String status;
 	private int cost;
 	private int otp;
-	@OneToOne
+	
+	
+	@ManyToOne
+    @JoinColumn(name = "delivery_partner_id")
 	private DelivaryPartner delivaryPartner;
+	
 	private String pickupaddress;
 	private String delivaryAddress;
-	@OneToMany
+	
+	@ManyToOne
+	@JoinColumn(name = "restaurant_id")
 	private Restaurant restaurant;
-	@OneToOne
+	
+	@ManyToOne
+    @JoinColumn(name = "customer_id")
 	private Customer customer;
-	@OneToOne
+	
+	 @OneToOne(mappedBy = "order")
 	private Payment payment;
 	private String estimatedTime;
 	private int distance;
@@ -36,9 +51,13 @@ public class Order {
 	private String date;
 	
 
-	
-	List<Item>item;
-
+	@ManyToMany
+    @JoinTable(
+        name = "order_item",
+        joinColumns = @JoinColumn(name = "order_id"),
+        inverseJoinColumns = @JoinColumn(name = "item_id")
+    )
+    private List<Item> item;
 
 
 	public int getId() {
@@ -46,11 +65,9 @@ public class Order {
 	}
 
 
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
 
 
 	public String getStatus() {
@@ -58,11 +75,9 @@ public class Order {
 	}
 
 
-
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
 
 
 	public int getCost() {
@@ -70,11 +85,9 @@ public class Order {
 	}
 
 
-
 	public void setCost(int cost) {
 		this.cost = cost;
 	}
-
 
 
 	public int getOtp() {
@@ -82,11 +95,9 @@ public class Order {
 	}
 
 
-
 	public void setOtp(int otp) {
 		this.otp = otp;
 	}
-
 
 
 	public DelivaryPartner getDelivaryPartner() {
@@ -94,11 +105,9 @@ public class Order {
 	}
 
 
-
 	public void setDelivaryPartner(DelivaryPartner delivaryPartner) {
 		this.delivaryPartner = delivaryPartner;
 	}
-
 
 
 	public String getPickupaddress() {
@@ -106,11 +115,9 @@ public class Order {
 	}
 
 
-
 	public void setPickupaddress(String pickupaddress) {
 		this.pickupaddress = pickupaddress;
 	}
-
 
 
 	public String getDelivaryAddress() {
@@ -118,11 +125,9 @@ public class Order {
 	}
 
 
-
 	public void setDelivaryAddress(String delivaryAddress) {
 		this.delivaryAddress = delivaryAddress;
 	}
-
 
 
 	public Restaurant getRestaurant() {
@@ -130,11 +135,9 @@ public class Order {
 	}
 
 
-
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
 	}
-
 
 
 	public Customer getCustomer() {
@@ -142,11 +145,9 @@ public class Order {
 	}
 
 
-
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-
 
 
 	public Payment getPayment() {
@@ -154,11 +155,9 @@ public class Order {
 	}
 
 
-
 	public void setPayment(Payment payment) {
 		this.payment = payment;
 	}
-
 
 
 	public String getEstimatedTime() {
@@ -166,11 +165,9 @@ public class Order {
 	}
 
 
-
 	public void setEstimatedTime(String estimatedTime) {
 		this.estimatedTime = estimatedTime;
 	}
-
 
 
 	public int getDistance() {
@@ -178,11 +175,9 @@ public class Order {
 	}
 
 
-
 	public void setDistance(int distance) {
 		this.distance = distance;
 	}
-
 
 
 	public int getDiscount() {
@@ -190,11 +185,9 @@ public class Order {
 	}
 
 
-
 	public void setDiscount(int discount) {
 		this.discount = discount;
 	}
-
 
 
 	public String getCoupones() {
@@ -202,11 +195,9 @@ public class Order {
 	}
 
 
-
 	public void setCoupones(String coupones) {
 		this.coupones = coupones;
 	}
-
 
 
 	public String getSpecialRequest() {
@@ -214,11 +205,9 @@ public class Order {
 	}
 
 
-
 	public void setSpecialRequest(String specialRequest) {
 		this.specialRequest = specialRequest;
 	}
-
 
 
 	public String getDelivaryInstructions() {
@@ -226,11 +215,9 @@ public class Order {
 	}
 
 
-
 	public void setDelivaryInstructions(String delivaryInstructions) {
 		this.delivaryInstructions = delivaryInstructions;
 	}
-
 
 
 	public String getDate() {
@@ -238,11 +225,9 @@ public class Order {
 	}
 
 
-
 	public void setDate(String date) {
 		this.date = date;
 	}
-
 
 
 	public List<Item> getItem() {
@@ -250,11 +235,9 @@ public class Order {
 	}
 
 
-
 	public void setItem(List<Item> item) {
 		this.item = item;
 	}
-
 
 
 	public Order(int id, String status, int cost, int otp, DelivaryPartner delivaryPartner, String pickupaddress,
@@ -283,11 +266,9 @@ public class Order {
 	}
 
 
-
 	public Order() {
 		super();
 	}
-
 
 
 	@Override
@@ -300,9 +281,7 @@ public class Order {
 				+ date + ", item=" + item + "]";
 	}
 
-	
-	
-	
+
 	
 
 }
