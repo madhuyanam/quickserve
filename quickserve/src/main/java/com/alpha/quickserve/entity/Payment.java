@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Payment {
@@ -13,6 +15,9 @@ public class Payment {
 private double amount;
 private String type;
 private String status;
+
+@OneToOne
+@JoinColumn(name = "order_id")
 private Order order;
 
 public int getId() {
