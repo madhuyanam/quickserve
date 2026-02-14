@@ -1,5 +1,8 @@
 package com.alpha.quickserve.entity;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class LocationCoordinates {
 	private double latitude;
 	private double longitude;
