@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alpha.quickserve.DTO.RestaurantDTO;
 import com.alpha.quickserve.ResponceStructure.ResponceStructure;
 import com.alpha.quickserve.Servicee.RestaurantService;
-import com.alpha.quickserve.entity.DelivaryPartner;
 import com.alpha.quickserve.entity.Restaurant;
 
 @RestController
