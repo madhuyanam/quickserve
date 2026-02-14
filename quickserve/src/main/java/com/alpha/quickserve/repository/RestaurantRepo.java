@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.alpha.quickserve.entity.Restaurant;
 
-import jakarta.annotation.Resource;
 
 @Repository
 public interface RestaurantRepo extends JpaRepository<Restaurant, Integer>{
