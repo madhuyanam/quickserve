@@ -39,4 +39,6 @@ public class RestaurantController {
 		return restaurantservice.deleteCustomer(mobno);
 		
 	}
+	
+
 }
