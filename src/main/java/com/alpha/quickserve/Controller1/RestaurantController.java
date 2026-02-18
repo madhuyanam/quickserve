@@ -34,7 +34,7 @@ public class RestaurantController {
 		
 	}
 
-	@DeleteMapping("//deletecustomer/{phoneno}")
+	@DeleteMapping("/deletecustomer/{phoneno}")
 	public ResponseEntity<ResponceStructure<Restaurant>> deleteCustomer(@RequestParam long mobno){
 		return restaurantservice.deleteCustomer(mobno);
 		

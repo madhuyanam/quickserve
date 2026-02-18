@@ -18,27 +18,61 @@ public class DeliveryPartnerService {
 	@Autowired 
 	private DelivaryPartnerRepo delivarypartnerrepo;
 	
+	public ResponceStructure<DelivaryPartner> saveDP(DelivaryPartnerDTO dpdto) {
 
-    public ResponceStructure<DelivaryPartner> saveDP(DelivaryPartner dp) {
+	    DelivaryPartner dp = new DelivaryPartner();
 
-        DelivaryPartner saved = delivarypartnerrepo.save(dp);
+	    dp.setName(dpdto.getName());
+	    dp.setMob(dpdto.getMob());
+	    dp.setMail(dpdto.getMail());
+	    dp.setVehicileno(dpdto.getVechileno());
 
-        ResponceStructure<DelivaryPartner> response = new ResponceStructure<>();
+	    DelivaryPartner saved = delivarypartnerrepo.save(dp);
 
-        response.setStatusCode(HttpStatus.CREATED.value());
-        response.setMessage("Delivery Partner Saved Successfully");
-        response.setData(saved);
+	    ResponceStructure<DelivaryPartner> response = new ResponceStructure<>();
 
-        return response;
-    }
+	    response.setStatusCode(HttpStatus.CREATED.value());
+	    response.setMessage("Delivery Partner Saved Successfully");
+	    response.setData(saved);
+
+	    return response;
+	}
+
+	public ResponceStructure<DelivaryPartner> deleteByMob(long mob) {
+
+	    DelivaryPartner dp = delivarypartnerrepo.findByMob(mob)
+	            .orElseThrow(() ->
+	                    new DeliveryPartnerNotFoundException(
+	                            "Delivery Partner with Mobile " + mob + " not found"));
+
+	    delivarypartnerrepo.delete(dp);
+
+	    ResponceStructure<DelivaryPartner> response = new ResponceStructure<>();
+	    response.setStatusCode(HttpStatus.OK.value());
+	    response.setMessage("Delivery Partner Deleted Successfully");
+	    response.setData(dp);
+
+	    return response;
+	}
+	
+	public ResponceStructure<DelivaryPartner> findByMob(long mob) {
+
+	    DelivaryPartner dp = delivarypartnerrepo.findByMob(mob)
+	            .orElseThrow(() ->
+	                    new DeliveryPartnerNotFoundException(
+	                            "Delivery Partner with Mobile " + mob + " not found"));
+
+	    ResponceStructure<DelivaryPartner> response = new ResponceStructure<>();
+	    response.setStatusCode(HttpStatus.OK.value());
+	    response.setMessage("Delivery Partner Found Successfully");
+	    response.setData(dp);
+
+	    return response;
+	}
+
+	
+	
     
-    
-    public DelivaryPartner getById(int id) {
-
-        return delivarypartnerrepo.findById(id)
-                .orElseThrow(() ->
-                        new DeliveryPartnerNotFoundException("DP with ID " + id + " not found"));
-    }
 
 
 }

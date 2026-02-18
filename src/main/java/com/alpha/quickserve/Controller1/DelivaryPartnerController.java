@@ -1,10 +1,16 @@
+
+
 package com.alpha.quickserve.Controller1;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alpha.quickserve.DTO.DelivaryPartnerDTO;
@@ -20,19 +26,37 @@ public class DelivaryPartnerController {
 	private DeliveryPartnerService dpservice;
 	
 	@PostMapping("/register")
-	public ResponseEntity<ResponceStructure<DelivaryPartner>> savedp(@RequestBody DelivaryPartnerDTO dpdto){
-		DelivaryPartner dp=new DelivaryPartner();
-		
-		dp.setName(dpdto.getName());
-		dp.setMob(dpdto.getMob());
-		dp.setMail(dpdto.getMail());
-		dp.setVehicileno(dpdto.getVechileno());
-		
+	public ResponseEntity<ResponceStructure<DelivaryPartner>> savedp(
+	        @RequestBody DelivaryPartnerDTO dpdto){
 
-        ResponceStructure<DelivaryPartner> response = dpservice.saveDP(dp);
+	    ResponceStructure<DelivaryPartner> response = dpservice.saveDP(dpdto);
 
-        return ResponseEntity.status(response.getStatusCode()).body(response);
+	    return ResponseEntity.status(response.getStatusCode()).body(response);
 	}
+	
+	
+	
+	@DeleteMapping("/deletebymob")
+	public ResponseEntity<ResponceStructure<DelivaryPartner>> deleteByMob(
+	        @RequestParam long mob){
+
+	    ResponceStructure<DelivaryPartner> response = dpservice.deleteByMob(mob);
+	    return ResponseEntity.status(response.getStatusCode()).body(response);
+	}
+
+	
+	
+	
+	@GetMapping("/findbymob")
+	public ResponseEntity<ResponceStructure<DelivaryPartner>> findByMob(
+	        @RequestParam long mob){
+
+	    ResponceStructure<DelivaryPartner> response = dpservice.findByMob(mob);
+
+	    return ResponseEntity.status(response.getStatusCode()).body(response);
+	}
+
+
 	
 	
 
