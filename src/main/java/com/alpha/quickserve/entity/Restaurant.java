@@ -29,7 +29,7 @@ private int id;
 
 	
 	
-	private LocationCoordinates locationcoordinates;
+//	private LocationCoordinates locationcoordinates;
 
 	private String status;
 	private double ratings;
@@ -78,14 +78,14 @@ private int id;
 
 
 
-	public LocationCoordinates getLocationcoordinates() {
-		return locationcoordinates;
-	}
-
-	public void setLocationcoordinates(LocationCoordinates locationcoordinates) {
-		this.locationcoordinates = locationcoordinates;
-
-	}
+//	public LocationCoordinates getLocationcoordinates() {
+//		return locationcoordinates;
+//	}
+//
+//	public void setLocationcoordinates(LocationCoordinates locationcoordinates) {
+//		this.locationcoordinates = locationcoordinates;
+//
+//	}
 
 	public String getStatus() {
 		return status;
@@ -146,15 +146,14 @@ private int id;
 	
 	
 
-	public Restaurant(int id, String name, String mail, long mobno, LocationCoordinates locationcoordinates,
-			String status, double ratings, String description, int packagingFee, String type, List<Item> menu,
-			List<Order> order) {
+
+	public Restaurant(int id, String name, String mail, long mobno, String status, double ratings, String description,
+			int packagingFee, String type, List<Item> menu, List<Order> order) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.mail = mail;
 		this.mobno = mobno;
-		this.locationcoordinates = locationcoordinates;
 		this.status = status;
 		this.ratings = ratings;
 		this.description = description;
@@ -168,12 +167,13 @@ private int id;
 		super();
 	}
 
+	
+
 	@Override
 	public String toString() {
-		return "Restaurant [id=" + id + ", name=" + name + ", mail=" + mail + ", mobno=" + mobno
-				+ ", locationcoordinates=" + locationcoordinates + ", status=" + status + ", ratings=" + ratings
-				+ ", description=" + description + ", packagingFee=" + packagingFee + ", type=" + type + ", menu="
-				+ menu + ", order=" + order + "]";
+		return "Restaurant [id=" + id + ", name=" + name + ", mail=" + mail + ", mobno=" + mobno + ", status=" + status
+				+ ", ratings=" + ratings + ", description=" + description + ", packagingFee=" + packagingFee + ", type="
+				+ type + ", menu=" + menu + ", order=" + order + "]";
 	}
 
 	public void setAddress(Address address) {

@@ -9,9 +9,9 @@ import com.alpha.quickserve.entity.Restaurant;
 @Repository
 public interface RestaurantRepo extends JpaRepository<Restaurant, Integer>{
 	
-Restaurant findByMobno(int mobno);
+Restaurant findByMobno(long mobno);
 	
-	void deleteByMobno(int mobno);
+	void deleteByMobno(long mobno);
 
 
 }

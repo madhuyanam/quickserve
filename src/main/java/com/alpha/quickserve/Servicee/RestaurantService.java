@@ -62,8 +62,10 @@ public class RestaurantService {
 
 		return new ResponseEntity<ResponceStructure<Restaurant>>(rs, HttpStatus.CREATED);
 	}
+	
+	
 
-	public ResponseEntity<ResponceStructure<Restaurant>> findrestaurant(int mobno) {
+	public ResponseEntity<ResponceStructure<Restaurant>> findrestaurant(long mobno) {
 
 		Restaurant restaurant = restaurantrepo.findByMobno(mobno);
 		if (restaurant == null) {
@@ -77,7 +79,7 @@ public class RestaurantService {
 		return new ResponseEntity<ResponceStructure<Restaurant>>(HttpStatus.FOUND);
 	}
 
-	public ResponseEntity<ResponceStructure<Restaurant>> deleteCustomer(int mobno) {
+	public ResponseEntity<ResponceStructure<Restaurant>> deleteCustomer(long mobno) {
 		restaurantrepo.deleteByMobno(mobno);
 		ResponceStructure<Restaurant> rs = new ResponceStructure<Restaurant>();
 		rs.setStatusCode(HttpStatus.OK.value());
