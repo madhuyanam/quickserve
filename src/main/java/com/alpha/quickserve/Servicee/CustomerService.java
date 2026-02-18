@@ -11,6 +11,8 @@ import com.alpha.quickserve.ResponceStructure.ResponceStructure;
 import com.alpha.quickserve.entity.Customer;
 import com.alpha.quickserve.repository.CustomerRepo;
 
+import jakarta.transaction.Transactional;
+
 
 
 @Service
@@ -36,6 +38,43 @@ public class CustomerService {
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+        public ResponseEntity<ResponceStructure<Customer>> findByMobno(long mobno) {
+
+            Customer customer = customerrepo.findByMobno(mobno);
+
+            if (customer == null) {
+                throw new CustomerNotFoundException("Customer not found with mobile number: " + mobno);
+            }
+
+            ResponceStructure<Customer> response = new ResponceStructure<>();
+            response.setStatusCode(HttpStatus.FOUND.value());
+            response.setMessage("Customer Found Successfully");
+            response.setData(customer);
+
+            return new ResponseEntity<>(response, HttpStatus.FOUND);
+        }
+        
+        @Transactional
+        public ResponseEntity<ResponceStructure<String>> deleteByMobno(long mobno) {
+
+            Customer customer = customerrepo.findByMobno(mobno);
+
+            if (customer == null) {
+                throw new CustomerNotFoundException("Customer not found with mobile number: " + mobno);
+            }
+
+            customerrepo.deleteByMobno(mobno);
+            ResponceStructure<String> response = new ResponceStructure<>();
+            response.setStatusCode(HttpStatus.OK.value());
+            response.setMessage("Customer Deleted Successfully");
+            response.setData("Deleted customer with mobile number: " + mobno);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+
+        
+
 
    
 }
