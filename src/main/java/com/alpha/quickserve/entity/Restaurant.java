@@ -4,12 +4,15 @@ import java.util.List;
 
 import com.alpha.quickserve.DTO.LocationCoordinates;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.OneToMany;
 
@@ -26,22 +29,21 @@ private int id;
 	@Column(unique = true)
 	private long mobno;
 
-
-	
-	
-//	private LocationCoordinates locationcoordinates;
-
 	private String status;
 	private double ratings;
 	private String  description;
 	private int packagingFee;
 	private String type;
 	
-	@OneToMany(mappedBy = "restaurant")
-	private List<Item>menu;
+	 @OneToMany(mappedBy="restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<Item> menuItems;
+
+	    @OneToMany(mappedBy="restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<Order> orders;
 	
-	@OneToMany(mappedBy = "restaurant")
-	private List<Order>order;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "address_id")
+	private Address address;
 
 	public int getId() {
 		return id;
@@ -74,18 +76,6 @@ private int id;
 	public void setMobno(long mobno) {
 		this.mobno = mobno;
 	}
-
-
-
-
-//	public LocationCoordinates getLocationcoordinates() {
-//		return locationcoordinates;
-//	}
-//
-//	public void setLocationcoordinates(LocationCoordinates locationcoordinates) {
-//		this.locationcoordinates = locationcoordinates;
-//
-//	}
 
 	public String getStatus() {
 		return status;
@@ -127,24 +117,32 @@ private int id;
 		this.type = type;
 	}
 
-	public List<Item> getMenu() {
-		return menu;
+	public List<Item> getMenuItems() {
+		return menuItems;
 	}
 
-	public void setMenu(List<Item> menu) {
-		this.menu = menu;
+	public void setMenuItems(List<Item> menuItems) {
+		this.menuItems = menuItems;
 	}
 
-	public List<Order> getOrder() {
-		return order;
+	public List<Order> getOrders() {
+		return orders;
 	}
 
-	public void setOrder(List<Order> order) {
-		this.order = order;
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
-	
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
 	public Restaurant(int id, String name, String mail, long mobno, String status, double ratings, String description,
-			int packagingFee, String type, List<Item> menu, List<Order> order) {
+			int packagingFee, String type, List<Item> menuItems, List<Order> orders, Address address) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -155,29 +153,22 @@ private int id;
 		this.description = description;
 		this.packagingFee = packagingFee;
 		this.type = type;
-		this.menu = menu;
-		this.order = order;
+		this.menuItems = menuItems;
+		this.orders = orders;
+		this.address = address;
 	}
 
 	public Restaurant() {
 		super();
 	}
 
-	
-
 	@Override
 	public String toString() {
 		return "Restaurant [id=" + id + ", name=" + name + ", mail=" + mail + ", mobno=" + mobno + ", status=" + status
 				+ ", ratings=" + ratings + ", description=" + description + ", packagingFee=" + packagingFee + ", type="
-				+ type + ", menu=" + menu + ", order=" + order + "]";
+				+ type + ", menuItems=" + menuItems + ", orders=" + orders + ", address=" + address + "]";
 	}
 
-	public void setAddress(Address address) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
 	
 	
 }
