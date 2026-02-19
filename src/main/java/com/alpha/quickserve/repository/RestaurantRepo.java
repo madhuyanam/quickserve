@@ -1,5 +1,6 @@
 package com.alpha.quickserve.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +18,7 @@ Restaurant findByMobno(long mobno);
 	
 	Optional<Restaurant> findByMobno(Long mobno);
 
+//public Optional<List<Restaurant>> FindByAddress_city(String cityname);
 
 }
 
