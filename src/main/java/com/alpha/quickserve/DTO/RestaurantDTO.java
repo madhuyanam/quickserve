@@ -2,7 +2,7 @@ package com.alpha.quickserve.DTO;
 
 public class RestaurantDTO {
 	private String name;
-	private long mob;
+	private long mobno;
 	private String mail;
 	private String description;
 	private LocationCoordinates coordinates;
@@ -18,11 +18,11 @@ public class RestaurantDTO {
 	}
 
 	public long getMob() {
-		return mob;
+		return mobno;
 	}
 
-	public void setMob(long mob) {
-		this.mob = mob;
+	public void setMob(long mobno) {
+		this.mobno = mobno;
 	}
 
 	public String getMail() {
@@ -65,11 +65,11 @@ public class RestaurantDTO {
 		this.type = type;
 	}
 
-	public RestaurantDTO(String name, long mob, String mail, String description, LocationCoordinates coordinates,
+	public RestaurantDTO(String name, long mobno, String mail, String description, LocationCoordinates coordinates,
 			int packagingFee, String type) {
 		super();
 		this.name = name;
-		this.mob = mob;
+		this.mobno = mobno;
 		this.mail = mail;
 		this.description = description;
 		this.coordinates = coordinates;
@@ -83,7 +83,7 @@ public class RestaurantDTO {
 
 	@Override
 	public String toString() {
-		return "RestaurantDTO [name=" + name + ", mob=" + mob + ", mail=" + mail + ", description=" + description
+		return "RestaurantDTO [name=" + name + ", mobno=" + mobno + ", mail=" + mail + ", description=" + description
 				+ ", coordinates=" + coordinates + ", packagingFee=" + packagingFee + ", type=" + type + "]";
 	}
 

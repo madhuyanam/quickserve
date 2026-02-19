@@ -96,6 +96,15 @@ public class RestaurantService {
 
 	    return new ResponseEntity<>(rs, HttpStatus.OK);
 	}
+	
+	
+	public void updateStatusByMobNo(Long mobno, String status) {
+        Restaurant restaurant = restaurantrepo.findByMobno(mobno)
+                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+
+        restaurant.setStatus(status);
+        restaurantrepo.save(restaurant);
+    }
 
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

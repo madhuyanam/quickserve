@@ -1,5 +1,7 @@
 package com.alpha.quickserve.Controller1;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,9 +22,9 @@ import com.alpha.quickserve.entity.Restaurant;
 @RestController
 @RequestMapping("/restaurant")
 public class RestaurantController {
+	
 	@Autowired
 	private RestaurantService restaurantservice;
-	
 	
 	@PostMapping("/register")
 	public ResponseEntity<ResponceStructure<Restaurant>> saveRestaurant(@RequestBody RestaurantDTO rdto){
@@ -51,5 +53,6 @@ public class RestaurantController {
 	            @RequestBody Item item) {
 	        return restaurantservice.addItemToMenu(restaurantmobno, item);
 	    }
+
 
 }
