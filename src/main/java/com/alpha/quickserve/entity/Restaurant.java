@@ -142,11 +142,7 @@ private int id;
 	public void setOrder(List<Order> order) {
 		this.order = order;
 	}
-
 	
-	
-
-
 	public Restaurant(int id, String name, String mail, long mobno, String status, double ratings, String description,
 			int packagingFee, String type, List<Item> menu, List<Order> order) {
 		super();
