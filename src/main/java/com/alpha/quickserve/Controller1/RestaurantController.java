@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alpha.quickserve.DTO.RestaurantDTO;
 import com.alpha.quickserve.ResponceStructure.ResponceStructure;
 import com.alpha.quickserve.Servicee.RestaurantService;
+import com.alpha.quickserve.entity.Item;
 import com.alpha.quickserve.entity.Restaurant;
 
 @RestController
-@RequestMapping("/restuarant")
+@RequestMapping("/restaurant")
 public class RestaurantController {
 	
 	@Autowired
@@ -33,26 +34,25 @@ public class RestaurantController {
 		
 	}
 	
-	@GetMapping("/findrestaurant/{phoneno}")
-	public ResponseEntity<ResponceStructure<Restaurant>> findrestaurant(@RequestParam long mobno){
-		return restaurantservice.findrestaurant(mobno);
-		
-	}
-
-	@DeleteMapping("/deletecustomer/{phoneno}")
-	public ResponseEntity<ResponceStructure<Restaurant>> deleteCustomer(@RequestParam long mobno){
-		return restaurantservice.deleteCustomer(mobno);
-		
-	}
-	 @PatchMapping("/updatestatus")
-	    public ResponseEntity<String> updateStatus(@RequestParam("restaurantMobno") Long mobno,
-	    		                                   @RequestBody Map<String, String> request) {
-
-	        String status = request.get("status");
-	        restaurantservice.updateStatusByMobNo(mobno, status);
-
-	        return ResponseEntity.ok("Restaurant status updated successfully");
-	    }
 	
+	 @GetMapping("/findrestaurant")
+	    public ResponseEntity<ResponceStructure<Restaurant>> findrestaurant(
+	            @RequestParam long mobno) {
+	        return restaurantservice.findrestaurant(mobno);
+	    }
+
+	 @DeleteMapping("/deletecustomer")
+	    public ResponseEntity<ResponceStructure<Restaurant>> deleteCustomer(
+	            @RequestParam long mobno) {
+	        return restaurantservice.deleteCustomer(mobno);
+	    }
+
+	    @PatchMapping("/additemtomenu")
+	    public ResponseEntity<ResponceStructure<Restaurant>> addItemToMenu(
+	            @RequestParam long restaurantmobno,
+	            @RequestBody Item item) {
+	        return restaurantservice.addItemToMenu(restaurantmobno, item);
+	    }
+
 
 }
