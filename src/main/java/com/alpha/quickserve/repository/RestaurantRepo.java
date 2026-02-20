@@ -10,7 +10,7 @@ import com.alpha.quickserve.entity.Restaurant;
 
 
 @Repository
-public interface RestaurantRepo extends JpaRepository<Restaurant, Integer>{
+public interface RestaurantRepo extends JpaRepository<Restaurant, Long>{
 	
 	Optional<Restaurant> findByMobno(long mobno);
 	
@@ -18,3 +18,4 @@ public interface RestaurantRepo extends JpaRepository<Restaurant, Integer>{
 
 	 
 }
+
