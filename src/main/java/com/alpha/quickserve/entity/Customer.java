@@ -28,7 +28,7 @@ public class Customer {
 	private String name;
 	
 	@Column(unique = true)
-	private long  mobno;
+	private Long  mobno;
 	
 	@Column(unique = true)
 	private String mailid;
@@ -50,6 +50,9 @@ public class Customer {
 	
 	@ManyToMany(mappedBy = "customers")
 	private List<Item>item;
+	
+	
+	
 
 
 	public int getId() {

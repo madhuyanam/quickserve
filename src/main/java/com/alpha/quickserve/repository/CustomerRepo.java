@@ -9,4 +9,6 @@ public interface CustomerRepo extends JpaRepository<Customer,Integer> {
 	 Customer findByMobno(long mobno);
 
 	    void deleteByMobno(long mobno);
+	    
+//	    Optional<Customer> findByMobno(long mobno);
 }

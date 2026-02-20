@@ -3,7 +3,7 @@ package com.alpha.quickserve.DTO;
 public class CustomerDto {
 	
 	private String name;
-	private long mobno;
+	private Long mobno;
 	private String mailid;
 	private String gender;
 	public String getName() {
