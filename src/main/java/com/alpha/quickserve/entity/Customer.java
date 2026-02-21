@@ -25,7 +25,7 @@ public class Customer {
 	private String name;
 	
 	@Column(unique = true)
-	private long  mobno;
+	private Long  mobno;
 	
 	@Column(unique = true)
 	private String mailid;
@@ -44,9 +44,11 @@ public class Customer {
 	@ManyToMany(mappedBy = "customers")
 	private List<Item>item;
 	
+
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "customer_id")   
 	private List<CartItem> cart;
+
 
 	public int getId() {
 		return id;

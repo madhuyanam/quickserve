@@ -1,6 +1,8 @@
 package com.alpha.quickserve.Servicee;
 
 
+import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,8 +14,10 @@ import com.alpha.quickserve.Exception.CustomerNotFoundException;
 import com.alpha.quickserve.ResponceStructure.ResponceStructure;
 
 import com.alpha.quickserve.entity.Customer;
-
+import com.alpha.quickserve.entity.Restaurant;
 import com.alpha.quickserve.repository.CustomerRepo;
+import com.alpha.quickserve.repository.RestaurantRepo;
+
 
 
 
@@ -22,7 +26,11 @@ public class CustomerService {
 
     @Autowired
     private CustomerRepo customerrepo;
-   
+
+    
+    @Autowired
+    private RestaurantRepo restaurantrepo;
+
 
     public ResponseEntity<ResponceStructure<Customer>> saveCustomer(CustomerDto cdto) {
 
@@ -41,6 +49,8 @@ public class CustomerService {
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+    
+    
         public ResponseEntity<ResponceStructure<Customer>> findByMobno(long mobno) {
 
             Customer customer = customerrepo.findByMobno(mobno);
@@ -74,6 +84,50 @@ public class CustomerService {
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
+        
+        
+        
+        
+        
+        
+public ResponseEntity<ResponceStructure<List<Restaurant>>> searchItemOrRestaurant(long custmob, String searchkey) {
+
+            
+        	Customer customer = customerrepo.findByMobno(custmob);
+
+        	if (customer == null) {
+        	    throw new CustomerNotFoundException(
+        	            "Customer with mobile " + custmob + " not found");
+        	}
+          
+            String city = customer.getAddress().getCity();
+
+            
+            List<Restaurant> restaurantsInCity =
+            		restaurantrepo.findByAddress_City(city);
+
+            
+            List<Restaurant> filteredRestaurants = restaurantsInCity.stream()
+                    .filter(r ->
+                            r.getName().toLowerCase().contains(searchkey.toLowerCase())
+                            ||
+                            r.getMenuItems().stream()
+                                    .anyMatch(i ->
+                                            i.getName().toLowerCase()
+                                                    .contains(searchkey.toLowerCase())
+                                    )
+                    )
+                    .toList();
+
+          
+            ResponceStructure<List<Restaurant>> rs = new ResponceStructure<>();
+            rs.setStatusCode(HttpStatus.OK.value());
+            rs.setMessage("Search completed successfully");
+            rs.setData(filteredRestaurants);
+
+            return new ResponseEntity<>(rs, HttpStatus.OK);
+        }
+
 
        
         
