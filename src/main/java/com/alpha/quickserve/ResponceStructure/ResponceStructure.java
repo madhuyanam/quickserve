@@ -1,5 +1,7 @@
 package com.alpha.quickserve.ResponceStructure;
 
+
+
 public class ResponceStructure<T> {
 	
 	private int statusCode;
@@ -20,8 +22,8 @@ public class ResponceStructure<T> {
 	public T getData() {
 		return data;
 	}
-	public void setData(T data) {
-		this.data = data;
+	public void setData(T saved) {
+		this.data = saved;
 	}
 	public ResponceStructure(int statusCode, String message, T data) {
 		super();
@@ -36,6 +38,7 @@ public class ResponceStructure<T> {
 	public String toString() {
 		return "ResponceStructure [statusCode=" + statusCode + ", message=" + message + ", data=" + data + "]";
 	}
+	
 	
 
 }

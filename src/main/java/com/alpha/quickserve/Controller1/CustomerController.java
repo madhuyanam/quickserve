@@ -1,6 +1,6 @@
 package com.alpha.quickserve.Controller1;
 
-import java.security.Provider.Service;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ public class CustomerController {
 
     @PostMapping("/register")
     public ResponseEntity<ResponceStructure<Customer>> saveCustomer(
-            @RequestBody CustomerDto cdto) {
+             @RequestBody CustomerDto cdto) {
 
         return customerservice.saveCustomer(cdto);
     }
@@ -40,5 +40,9 @@ public class CustomerController {
             return customerservice.deleteByMobno(mobno);
         }
     
+       
+        
+        
+        
     }
 

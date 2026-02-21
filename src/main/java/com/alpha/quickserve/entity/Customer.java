@@ -2,6 +2,7 @@ package com.alpha.quickserve.entity;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,10 +15,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 
 
 @Entity
@@ -44,13 +41,12 @@ public class Customer {
 	List<Order> order;
 	
 	
-
-	
-	
-	
 	@ManyToMany(mappedBy = "customers")
 	private List<Item>item;
-
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "customer_id")   
+	private List<CartItem> cart;
 
 	public int getId() {
 		return id;
@@ -116,8 +112,16 @@ public class Customer {
 		this.item = item;
 	}
 
+	public List<CartItem> getCart() {
+		return cart;
+	}
+
+	public void setCart(List<CartItem> cart) {
+		this.cart = cart;
+	}
+
 	public Customer(int id, String name, long mobno, String mailid, String gender, Address address, List<Order> order,
-			List<Item> item) {
+			List<Item> item, List<CartItem> cart) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -127,6 +131,7 @@ public class Customer {
 		this.address = address;
 		this.order = order;
 		this.item = item;
+		this.cart = cart;
 	}
 
 	public Customer() {
@@ -136,8 +141,17 @@ public class Customer {
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", name=" + name + ", mobno=" + mobno + ", mailid=" + mailid + ", gender="
-				+ gender + ", address=" + address + ", order=" + order + ", item=" + item + "]";
+				+ gender + ", address=" + address + ", order=" + order + ", item=" + item + ", cart=" + cart + "]";
 	}
-	 
+
+	
+
+
+	
+	
+	
+	
+
+
 	
 }

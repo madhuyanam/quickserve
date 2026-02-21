@@ -1,5 +1,7 @@
 package com.alpha.quickserve.repository;
 
+
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +11,5 @@ public interface CustomerRepo extends JpaRepository<Customer,Integer> {
 	 Customer findByMobno(long mobno);
 
 	    void deleteByMobno(long mobno);
+
 }

@@ -2,8 +2,6 @@ package com.alpha.quickserve.entity;
 
 import java.util.List;
 
-import com.alpha.quickserve.DTO.LocationCoordinates;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.OneToMany;
 
 
 @Entity

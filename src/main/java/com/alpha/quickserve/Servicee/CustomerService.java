@@ -1,5 +1,7 @@
 package com.alpha.quickserve.Servicee;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +10,10 @@ import org.springframework.stereotype.Service;
 import com.alpha.quickserve.DTO.CustomerDto;
 import com.alpha.quickserve.Exception.CustomerNotFoundException;
 import com.alpha.quickserve.ResponceStructure.ResponceStructure;
-import com.alpha.quickserve.entity.Customer;
-import com.alpha.quickserve.repository.CustomerRepo;
 
-import jakarta.transaction.Transactional;
+import com.alpha.quickserve.entity.Customer;
+
+import com.alpha.quickserve.repository.CustomerRepo;
 
 
 
@@ -20,6 +22,7 @@ public class CustomerService {
 
     @Autowired
     private CustomerRepo customerrepo;
+   
 
     public ResponseEntity<ResponceStructure<Customer>> saveCustomer(CustomerDto cdto) {
 
@@ -54,7 +57,7 @@ public class CustomerService {
             return new ResponseEntity<>(response, HttpStatus.FOUND);
         }
         
-        @Transactional
+     
         public ResponseEntity<ResponceStructure<String>> deleteByMobno(long mobno) {
 
             Customer customer = customerrepo.findByMobno(mobno);
@@ -72,7 +75,7 @@ public class CustomerService {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
-
+       
         
 
 
