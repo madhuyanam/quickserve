@@ -142,14 +142,7 @@ public class Address {
 				+ area + ", landmark=" + landmark + ", city=" + city + ", district=" + district + ", state=" + state
 				+ ", country=" + country + ", pincode=" + pincode + "]";
 	}
-	public void setPincode(Object object) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void setCity(Object object) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 	
 

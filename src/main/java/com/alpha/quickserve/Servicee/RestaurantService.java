@@ -23,7 +23,7 @@ public class RestaurantService {
 	@Autowired
 	private RestTemplate resttemplate;
 
-	public ResponseEntity<ResponceStructure<Restaurant>> save(@RequestBody RestaurantDTO rdto) {
+	public ResponseEntity<ResponceStructure<Restaurant>> save(RestaurantDTO rdto) {
 		Restaurant r = new Restaurant();
 
 		r.setName(rdto.getName());
@@ -51,7 +51,7 @@ public class RestaurantService {
 		address.setDistrict((String) addressMap.get("county"));
 		address.setState((String) addressMap.get("state"));
 		address.setCountry((String) addressMap.get("country"));
-		address.setPincode((String) addressMap.get("postcode"));
+		address.setPincode(Integer.parseInt((String) addressMap.get("postcode")));
 
 		r.setAddress(address);
 		restaurantrepo.save(r);
@@ -80,7 +80,7 @@ public class RestaurantService {
 	
 	
 
-	public ResponseEntity<ResponceStructure<Restaurant>> deleteCustomer(long mobno) {
+	public ResponseEntity<ResponceStructure<Restaurant>> deleteRestaurant(long mobno) {
 
 	    Restaurant restaurant = restaurantrepo.findByMobno(mobno)
 	            .orElseThrow(() -> new RuntimeException("Restaurant not found"));

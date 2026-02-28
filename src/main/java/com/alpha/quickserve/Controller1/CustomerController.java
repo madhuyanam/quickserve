@@ -2,7 +2,7 @@ package com.alpha.quickserve.Controller1;
 
 
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +19,7 @@ import com.alpha.quickserve.DTO.CustomerDto;
 import com.alpha.quickserve.ResponceStructure.ResponceStructure;
 import com.alpha.quickserve.Servicee.CustomerService;
 import com.alpha.quickserve.entity.Customer;
+import com.alpha.quickserve.entity.Order;
 import com.alpha.quickserve.entity.Restaurant;
 
 @RestController
@@ -27,6 +28,9 @@ public class CustomerController {
 
     @Autowired
     private CustomerService customerservice;
+    
+    
+   
 
     @PostMapping("/register")
     public ResponseEntity<ResponceStructure<Customer>> saveCustomer(
@@ -35,12 +39,12 @@ public class CustomerController {
         return customerservice.saveCustomer(cdto);
     }
         @GetMapping("/find/{mobno}")
-        public ResponseEntity<ResponceStructure<Customer>> find(@PathVariable long mobno) {
+        public ResponseEntity<ResponceStructure<Customer>> find(@PathVariable("mobno") long mobno) {
             return customerservice.findByMobno(mobno);
         }
 
         @DeleteMapping("/delete/{mobno}")
-        public ResponseEntity<ResponceStructure<String>> delete(@PathVariable long mobno) {
+        public ResponseEntity<ResponceStructure<String>> delete(@PathVariable("mobno") long mobno) {
             return customerservice.deleteByMobno(mobno);
         }
         
@@ -56,10 +60,23 @@ public class CustomerController {
             return customerservice.searchItemOrRestaurant(custmob, searchkey);
         }
 
-    
+        
+        @PostMapping("/addtocart")
+        public ResponseEntity<ResponceStructure<String>> addToCart(
+                @RequestParam long customermobno,
+                @RequestParam int itemid,
+                @RequestParam int quantity) {
+
+            return customerservice.addToCart(
+                    customermobno, itemid, quantity);
+        }
        
-        
-        
-        
+        @PostMapping("/placeorder")
+        public ResponseEntity<ResponceStructure<Order>> 
+        placeOrder(@RequestBody Map<String, Long> request) {
+
+            long mobno = request.get("mobno");
+            return customerservice.placeOrder(mobno);
+        }     
     }
 

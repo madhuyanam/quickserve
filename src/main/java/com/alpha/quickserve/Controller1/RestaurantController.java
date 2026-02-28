@@ -39,10 +39,10 @@ public class RestaurantController {
 	        return restaurantservice.findrestaurant(mobno);
 	    }
 
-	 @DeleteMapping("/deletecustomer")
-	    public ResponseEntity<ResponceStructure<Restaurant>> deleteCustomer(
+	 @DeleteMapping("/deleterestaurant")
+	    public ResponseEntity<ResponceStructure<Restaurant>> deleteRestaurant(
 	            @RequestParam long mobno) {
-	        return restaurantservice.deleteCustomer(mobno);
+	        return restaurantservice.deleteRestaurant(mobno);
 	    }
 
 	    @PatchMapping("/additemtomenu")

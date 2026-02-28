@@ -1,6 +1,8 @@
 package com.alpha.quickserve.entity;
 
+import java.util.ArrayList;
 import java.util.List;
+
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,10 +15,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-
-
-
-
 @Entity
 public class Customer {
 	@Id
@@ -25,7 +23,7 @@ public class Customer {
 	private String name;
 	
 	@Column(unique = true)
-	private Long  mobno;
+	private long  mobno;
 	
 	@Column(unique = true)
 	private String mailid;
@@ -47,7 +45,7 @@ public class Customer {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "customer_id")   
-	private List<CartItem> cart;
+	private List<CartItem> cart = new ArrayList<>();
 
 
 	public int getId() {

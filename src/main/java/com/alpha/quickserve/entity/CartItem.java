@@ -13,9 +13,10 @@ public class CartItem {
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
 	private int id;
 	 @ManyToOne
-	    @JoinColumn(name = "item_id")
+	 @JoinColumn(name = "item_id")
 	private Item item;
 	private int quantity;
+	
 	public int getId() {
 		return id;
 	}

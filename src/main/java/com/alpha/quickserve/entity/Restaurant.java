@@ -19,13 +19,13 @@ import jakarta.persistence.Table;
 public class Restaurant {
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
-private int id;
+    private int id;
 	private String name;
 	@Column(unique = true)
 	private String mail;
 	@Column(unique = true)
 	private long mobno;
-
+	
 	private String status;
 	private double ratings;
 	private String  description;
