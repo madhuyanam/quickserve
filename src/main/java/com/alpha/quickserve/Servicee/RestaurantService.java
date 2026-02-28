@@ -1,5 +1,6 @@
 package com.alpha.quickserve.Servicee;
 
+import java.util.ArrayList;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,15 +24,16 @@ public class RestaurantService {
 	@Autowired
 	private RestTemplate resttemplate;
 
-	public ResponseEntity<ResponceStructure<Restaurant>> save(@RequestBody RestaurantDTO rdto) {
+	public ResponseEntity<ResponceStructure<Restaurant>> save(RestaurantDTO rdto) {
 		Restaurant r = new Restaurant();
 
 		r.setName(rdto.getName());
-		r.setMobno(rdto.getMob());
+		r.setMobno(rdto.getMobno()); 
 		r.setMail(rdto.getMail());
 		r.setDescription(rdto.getDescription());
 		r.setPackagingFee(rdto.getPackagingFee());
 		r.setType(rdto.getType());
+		r.setStatus("Closed");
 
 		String url = "https://us1.locationiq.com/v1/reverse?key=pk.7de45e6b5eecd2b0cac58b13e3b3012e&lat="
 				+ rdto.getCoordinates().getLatitude() + "&lon= " + rdto.getCoordinates().getLongitude()
@@ -51,7 +53,7 @@ public class RestaurantService {
 		address.setDistrict((String) addressMap.get("county"));
 		address.setState((String) addressMap.get("state"));
 		address.setCountry((String) addressMap.get("country"));
-		address.setPincode((String) addressMap.get("postcode"));
+		address.setPincode(Integer.parseInt((String) addressMap.get("postcode")));
 
 		r.setAddress(address);
 		restaurantrepo.save(r);
@@ -62,76 +64,94 @@ public class RestaurantService {
 
 		return new ResponseEntity<ResponceStructure<Restaurant>>(rs, HttpStatus.CREATED);
 	}
-	
-	
+
+
 
 	public ResponseEntity<ResponceStructure<Restaurant>> findrestaurant(long mobno) {
 
-	    Restaurant restaurant = restaurantrepo.findByMobno(mobno)
-	            .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+		Restaurant restaurant = restaurantrepo.findByMobno(mobno).orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
-	    ResponceStructure<Restaurant> rs = new ResponceStructure<>();
-	    rs.setStatusCode(HttpStatus.OK.value());
-	    rs.setMessage("Restaurant fetched successfully");
-	    rs.setData(restaurant);
+		ResponceStructure<Restaurant> rs = new ResponceStructure<>();
+		rs.setStatusCode(HttpStatus.OK.value());
+		rs.setMessage("Restaurant fetched successfully");
+		rs.setData(restaurant);
 
-	    return new ResponseEntity<>(rs, HttpStatus.OK);
+		return new ResponseEntity<>(rs, HttpStatus.OK);
 	}
-	
-	
 
-	public ResponseEntity<ResponceStructure<Restaurant>> deleteCustomer(long mobno) {
 
-	    Restaurant restaurant = restaurantrepo.findByMobno(mobno)
-	            .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+
+	public ResponseEntity<ResponceStructure<String>> deleteRestaurant(long mobno) {
+
+	    Restaurant restaurant = restaurantrepo
+	            .findByMobno(mobno)
+	            .orElseThrow(() ->
+	                    new RuntimeException("Restaurant not found with mobile number: " + mobno));
 
 	    restaurantrepo.delete(restaurant);
 
-	    ResponceStructure<Restaurant> rs = new ResponceStructure<>();
+	    ResponceStructure<String> rs = new ResponceStructure<>();
 	    rs.setStatusCode(HttpStatus.OK.value());
 	    rs.setMessage("Restaurant Deleted Successfully");
-	    rs.setData(null);
+	    rs.setData("Deleted restaurant with mobile number: " + mobno);
 
 	    return new ResponseEntity<>(rs, HttpStatus.OK);
 	}
-	
-	
+
+
 	public void updateStatusByMobNo(Long mobno, String status) {
-        Restaurant restaurant = restaurantrepo.findByMobno(mobno)
-                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+		Restaurant restaurant = restaurantrepo.findByMobno(mobno).orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
-        restaurant.setStatus(status);
-        restaurantrepo.save(restaurant);
-    }
+		restaurant.setStatus(status);
+		restaurantrepo.save(restaurant);
+	}
 
-	
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	
+
 	public ResponseEntity<ResponceStructure<Restaurant>> addItemToMenu(
-	        long restaurantmobno, Item item) {
+			long restaurantmobno, Item item) {
 
-	    Restaurant restaurant = restaurantrepo.findByMobno(restaurantmobno)
-	            .orElseThrow(() ->
-	                    new RuntimeException("Restaurant not found"));
+		Restaurant restaurant = restaurantrepo.findByMobno(restaurantmobno).orElseThrow(() ->new RuntimeException("Restaurant not found"));
 
-	    // Add item to existing menu
-	    restaurant.getMenuItems().add(item);
+		if (restaurant.getMenuItems() == null) {
+			restaurant.setMenuItems(new ArrayList<>());
+		}
 
-	    restaurantrepo.save(restaurant);
+		item.setRestaurant(restaurant);
+		restaurant.getMenuItems().add(item);
 
-	    ResponceStructure<Restaurant> rs =
-	            new ResponceStructure<>();
+		restaurantrepo.save(restaurant);
 
-	    rs.setStatusCode(HttpStatus.OK.value());
-	    rs.setMessage("Item added to menu successfully");
-	    rs.setData(restaurant);
+		ResponceStructure<Restaurant> rs =
+				new ResponceStructure<>();
 
-	    return new ResponseEntity<>(rs, HttpStatus.OK);
+		rs.setStatusCode(HttpStatus.OK.value());
+		rs.setMessage("Item added to menu successfully");
+		rs.setData(restaurant);
+
+		return new ResponseEntity<>(rs, HttpStatus.OK);
 	}
-	
-	
-	
-	
+	public ResponseEntity<ResponceStructure<String>> updateItemAvailability(long restaurantmobno,int itemid,String availability) {
+
+		Restaurant restaurant = restaurantrepo.findByMobno(restaurantmobno).orElseThrow(() -> new RuntimeException("Restaurant not found"));
+
+		Item item = restaurant.getMenuItems().stream().filter(i -> i.getId() == itemid).findFirst().orElseThrow(() -> new RuntimeException("Item not found"));
+
+		item.setAvailability(availability);
+
+		restaurantrepo.save(restaurant);
+
+		ResponceStructure<String> rs = new ResponceStructure<>();
+		rs.setStatusCode(HttpStatus.OK.value());
+		rs.setMessage("Item availability updated successfully");
+		rs.setData("Item ID: " + itemid + " updated");
+
+		return new ResponseEntity<>(rs, HttpStatus.OK);
+	}
+
+
+
 }
 

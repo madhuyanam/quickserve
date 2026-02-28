@@ -20,43 +20,43 @@ import com.alpha.quickserve.entity.DelivaryPartner;
 @RestController
 @RequestMapping("/delivarypartner")
 public class DelivaryPartnerController {
-	
+
 	@Autowired
 	private DeliveryPartnerService dpservice;
-	
+
 	@PostMapping("/register")
 	public ResponseEntity<ResponceStructure<DelivaryPartner>> savedp(
-	        @RequestBody DelivaryPartnerDTO dpdto){
+			@RequestBody DelivaryPartnerDTO dpdto){
 
-	    ResponceStructure<DelivaryPartner> response = dpservice.saveDP(dpdto);
+		ResponceStructure<DelivaryPartner> response = dpservice.saveDP(dpdto);
 
-	    return ResponseEntity.status(response.getStatusCode()).body(response);
+		return ResponseEntity.status(response.getStatusCode()).body(response);
 	}
-	
-	
-	
+
+
+
 	@DeleteMapping("/deletebymob")
 	public ResponseEntity<ResponceStructure<DelivaryPartner>> deleteByMob(
-	        @RequestParam long mob){
+			@RequestParam long mob){
 
-	    ResponceStructure<DelivaryPartner> response = dpservice.deleteByMob(mob);
-	    return ResponseEntity.status(response.getStatusCode()).body(response);
+		ResponceStructure<DelivaryPartner> response = dpservice.deleteByMob(mob);
+		return ResponseEntity.status(response.getStatusCode()).body(response);
 	}
 
-	
-	
-	
+
+
+
 	@GetMapping("/findbymob")
 	public ResponseEntity<ResponceStructure<DelivaryPartner>> findByMob(
-	        @RequestParam long mob){
+			@RequestParam long mob){
 
-	    ResponceStructure<DelivaryPartner> response = dpservice.findByMob(mob);
+		ResponceStructure<DelivaryPartner> response = dpservice.findByMob(mob);
 
-	    return ResponseEntity.status(response.getStatusCode()).body(response);
+		return ResponseEntity.status(response.getStatusCode()).body(response);
 	}
 
 
-	
-	
+
+
 
 }

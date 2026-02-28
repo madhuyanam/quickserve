@@ -25,18 +25,18 @@ public class Item {
 	private Integer  rating;
 	private String image;
 	private Integer numberOfServices;
-	
-    @ManyToOne
-    @JoinColumn(name = "restaurant_id")
-    private Restaurant restaurant;
-    
-    @ManyToMany
-    @JoinTable(
-        name = "customer_item",
-        joinColumns = @JoinColumn(name = "item_id"),
-        inverseJoinColumns = @JoinColumn(name = "customer_id")
-    )
-    private List<Customer> customers;
+
+	@ManyToOne
+	@JoinColumn(name = "restaurant_id")
+	private Restaurant restaurant;
+
+	@ManyToMany
+	@JoinTable(
+			name = "customer_item",
+			joinColumns = @JoinColumn(name = "item_id"),
+			inverseJoinColumns = @JoinColumn(name = "customer_id")
+			)
+	private List<Customer> customers;
 
 	public int getId() {
 		return id;
@@ -163,7 +163,7 @@ public class Item {
 				+ "]";
 	}
 
-    
-	
+
+
 
 }

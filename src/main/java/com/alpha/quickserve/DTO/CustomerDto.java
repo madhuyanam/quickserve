@@ -1,11 +1,12 @@
 package com.alpha.quickserve.DTO;
 
 public class CustomerDto {
-	
+
 	private String name;
-	private Long mobno;
+	private long mobno;
 	private String mailid;
 	private String gender;
+	
 	public String getName() {
 		return name;
 	}
@@ -44,8 +45,8 @@ public class CustomerDto {
 	public String toString() {
 		return "CustomerDto [name=" + name + ", mobno=" + mobno + ", mailid=" + mailid + ", gender=" + gender + "]";
 	}
-	
-	
-	
+
+
+
 
 }

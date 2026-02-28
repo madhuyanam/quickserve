@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import com.alpha.quickserve.entity.DelivaryPartner;
 @Repository
 public interface DelivaryPartnerRepo extends JpaRepository<DelivaryPartner, Integer> {
-	
+
 	Optional<DelivaryPartner> findByMob(long mob);
 
-	
-	
+
+
 }

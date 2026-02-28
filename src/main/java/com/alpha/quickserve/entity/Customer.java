@@ -23,27 +23,27 @@ public class Customer {
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
 	private int id;
 	private String name;
-	
+
 	@Column(unique = true)
 	private Long  mobno;
-	
+
 	@Column(unique = true)
 	private String mailid;
-	
+
 	private String gender;
-	
+
 	@OneToOne
 
-	 @JoinColumn(name = "address_id")
+	@JoinColumn(name = "address_id")
 	private Address address;
-	
+
 	@OneToMany(mappedBy = "customer")
 	List<Order> order;
-	
-	
+
+
 	@ManyToMany(mappedBy = "customers")
 	private List<Item>item;
-	
+
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "customer_id")   
@@ -146,14 +146,14 @@ public class Customer {
 				+ gender + ", address=" + address + ", order=" + order + ", item=" + item + ", cart=" + cart + "]";
 	}
 
-	
 
 
-	
-	
-	
-	
 
 
-	
+
+
+
+
+
+
 }

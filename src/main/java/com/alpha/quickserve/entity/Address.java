@@ -12,13 +12,13 @@ public class Address {
 	private int id;
 	private Double latitude;
 	private Double longitude;
-	
+
 	//HOUSE details
 	private String flatNumber;
 	private String floor;
 	private String buildingName;
 	private String street;
-	
+
 	//Area Deatils
 	private String area;
 	private String landmark;
@@ -27,8 +27,8 @@ public class Address {
 	private String state;
 	private String country;
 	private int  pincode;
-	
-	
+
+
 	public int getId() {
 		return id;
 	}
@@ -142,15 +142,4 @@ public class Address {
 				+ area + ", landmark=" + landmark + ", city=" + city + ", district=" + district + ", state=" + state
 				+ ", country=" + country + ", pincode=" + pincode + "]";
 	}
-	public void setPincode(Object object) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void setCity(Object object) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
-
 }

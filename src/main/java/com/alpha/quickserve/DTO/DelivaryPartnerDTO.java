@@ -5,6 +5,7 @@ public class DelivaryPartnerDTO {
 	private long mob;
 	private String mail;
 	private String vechileno;
+	
 	public String getName() {
 		return name;
 	}
@@ -44,7 +45,7 @@ public class DelivaryPartnerDTO {
 		return "DeliveryPartnerDTO [name=" + name + ", mob=" + mob + ", mail=" + mail + ", vechileno=" + vechileno
 				+ "]";
 	}
-	
-	
+
+
 
 }

@@ -2,6 +2,7 @@ package com.alpha.quickserve.entity;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,31 +24,30 @@ public class Order {
 	private String status;
 	private int cost;
 	private int otp;
-	
+
 	@ManyToOne
-    @JoinColumn(name = "delivery_partner_id")
+	@JoinColumn(name = "delivery_partner_id")
 
 	private DelivaryPartner delivaryPartner;
-	
+
 	private String pickupaddress;
 	private String delivaryAddress;
 
-	
-	@ManyToOne
-	 @JoinColumn(name = "customer_id")
-	private Customer customer;
-	
 
-	
+	@ManyToOne
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
+
+
+
 	@ManyToOne
 	@JoinColumn(name = "restaurant_id")
 	private Restaurant restaurant;
-	
-	
-	
-	@OneToOne
-	 @JoinColumn(name = "payment_id")
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "payment_id")
 	private Payment payment;
+	
 	private String estimatedTime;
 	private int distance;
 	private int discount;
@@ -55,16 +55,16 @@ public class Order {
 	private String specialRequest;
 	private String delivaryInstructions;
 	private String date;
-	
+
 
 	@ManyToMany
 
-    @JoinTable(
-        name = "order_item",
-        joinColumns = @JoinColumn(name = "order_id"),
-        inverseJoinColumns = @JoinColumn(name = "item_id")
-    )
-    private List<Item> item;
+	@JoinTable(
+			name = "order_item",
+			joinColumns = @JoinColumn(name = "order_id"),
+			inverseJoinColumns = @JoinColumn(name = "item_id")
+			)
+	private List<Item> item;
 
 
 
@@ -277,6 +277,6 @@ public class Order {
 	}
 
 
-	
+
 
 }

@@ -17,12 +17,12 @@ public class RestaurantDTO {
 		this.name = name;
 	}
 
-	public long getMob() {
-		return mobno;
+	public long getMobno() {
+	    return mobno;
 	}
 
-	public void setMob(long mobno) {
-		this.mobno = mobno;
+	public void setMobno(long mobno) {
+	    this.mobno = mobno;
 	}
 
 	public String getMail() {

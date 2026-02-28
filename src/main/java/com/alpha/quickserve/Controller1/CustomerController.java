@@ -1,6 +1,5 @@
 package com.alpha.quickserve.Controller1;
 
-
 import java.util.List;
 
 
@@ -25,41 +24,38 @@ import com.alpha.quickserve.entity.Restaurant;
 @RequestMapping("/customer")
 public class CustomerController {
 
-    @Autowired
-    private CustomerService customerservice;
+	@Autowired
+	private CustomerService customerservice;
 
-    @PostMapping("/register")
-    public ResponseEntity<ResponceStructure<Customer>> saveCustomer(
-             @RequestBody CustomerDto cdto) {
+	@PostMapping("/register")
+	public ResponseEntity<ResponceStructure<Customer>> saveCustomer(
+			@RequestBody CustomerDto cdto) {
 
-        return customerservice.saveCustomer(cdto);
-    }
-        @GetMapping("/find/{mobno}")
-        public ResponseEntity<ResponceStructure<Customer>> find(@PathVariable long mobno) {
-            return customerservice.findByMobno(mobno);
-        }
+		return customerservice.saveCustomer(cdto);
+	}
+	@GetMapping("/find/{mobno}")
+	public ResponseEntity<ResponceStructure<Customer>> find(@PathVariable("mobno") long mobno) {
+		return customerservice.findByMobno(mobno);
+	}
 
-        @DeleteMapping("/delete/{mobno}")
-        public ResponseEntity<ResponceStructure<String>> delete(@PathVariable long mobno) {
-            return customerservice.deleteByMobno(mobno);
-        }
-        
-        
-        
-        
-        @GetMapping("/searchitemorrestaurant")
-        public ResponseEntity<ResponceStructure<List<Restaurant>>> 
-        searchItemOrRestaurant(
-                @RequestParam long custmob,
-                @RequestParam String searchkey) {
+	@DeleteMapping("/delete/{mobno}")
+	public ResponseEntity<ResponceStructure<String>> delete(@PathVariable("mobno") long mobno) {
+		return customerservice.deleteByMobno(mobno);
+	}
 
-            return customerservice.searchItemOrRestaurant(custmob, searchkey);
-        }
+	@GetMapping("/searchitemorrestaurant")
+	public ResponseEntity<ResponceStructure<List<Restaurant>>> 
+	searchItemOrRestaurant(
+			@RequestParam long custmob,
+			@RequestParam String searchkey) {
 
-    
-       
-        
-        
-        
-    }
+		return customerservice.searchItemOrRestaurant(custmob, searchkey);
+	}
+
+
+
+
+
+
+}
 

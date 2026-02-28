@@ -1,8 +1,6 @@
 package com.alpha.quickserve.Servicee;
 
-
 import java.util.List;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,14 +10,10 @@ import org.springframework.stereotype.Service;
 import com.alpha.quickserve.DTO.CustomerDto;
 import com.alpha.quickserve.Exception.CustomerNotFoundException;
 import com.alpha.quickserve.ResponceStructure.ResponceStructure;
-
 import com.alpha.quickserve.entity.Customer;
 import com.alpha.quickserve.entity.Restaurant;
 import com.alpha.quickserve.repository.CustomerRepo;
 import com.alpha.quickserve.repository.RestaurantRepo;
-
-
-
 
 @Service
 public class CustomerService {
@@ -27,10 +21,8 @@ public class CustomerService {
     @Autowired
     private CustomerRepo customerrepo;
 
-    
     @Autowired
     private RestaurantRepo restaurantrepo;
-
 
     public ResponseEntity<ResponceStructure<Customer>> saveCustomer(CustomerDto cdto) {
 
@@ -49,89 +41,67 @@ public class CustomerService {
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-    
-    
-        public ResponseEntity<ResponceStructure<Customer>> findByMobno(long mobno) {
 
-            Customer customer = customerrepo.findByMobno(mobno);
+    public ResponseEntity<ResponceStructure<Customer>> findByMobno(long mobno) {
 
-            if (customer == null) {
-                throw new CustomerNotFoundException("Customer not found with mobile number: " + mobno);
-            }
+    	Customer customer = customerrepo.findByMobno(mobno).orElseThrow(() ->new CustomerNotFoundException("Customer not found with mobile number: " + mobno));
 
-            ResponceStructure<Customer> response = new ResponceStructure<>();
-            response.setStatusCode(HttpStatus.FOUND.value());
-            response.setMessage("Customer Found Successfully");
-            response.setData(customer);
+        ResponceStructure<Customer> response = new ResponceStructure<>();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("Customer Found Successfully");
+        response.setData(customer);
 
-            return new ResponseEntity<>(response, HttpStatus.FOUND);
-        }
-        
-     
-        public ResponseEntity<ResponceStructure<String>> deleteByMobno(long mobno) {
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-            Customer customer = customerrepo.findByMobno(mobno);
+    public ResponseEntity<ResponceStructure<String>> deleteByMobno(long mobno) {
 
-            if (customer == null) {
-                throw new CustomerNotFoundException("Customer not found with mobile number: " + mobno);
-            }
+        Customer customer = customerrepo
+                .findByMobno(mobno)
+                .orElseThrow(() ->
+                        new CustomerNotFoundException(
+                                "Customer not found with mobile number: " + mobno));
 
-            customerrepo.deleteByMobno(mobno);
-            ResponceStructure<String> response = new ResponceStructure<>();
-            response.setStatusCode(HttpStatus.OK.value());
-            response.setMessage("Customer Deleted Successfully");
-            response.setData("Deleted customer with mobile number: " + mobno);
+        customerrepo.delete(customer);
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        
-        
-        
-        
-        
-        
-public ResponseEntity<ResponceStructure<List<Restaurant>>> searchItemOrRestaurant(long custmob, String searchkey) {
+        ResponceStructure<String> response = new ResponceStructure<>();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("Customer Deleted Successfully");
+        response.setData("Deleted customer with mobile number: " + mobno);
 
-            
-        	Customer customer = customerrepo.findByMobno(custmob);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-        	if (customer == null) {
-        	    throw new CustomerNotFoundException(
-        	            "Customer with mobile " + custmob + " not found");
-        	}
-          
-            String city = customer.getAddress().getCity();
+    public ResponseEntity<ResponceStructure<List<Restaurant>>> searchItemOrRestaurant(
+            long mobno, String searchkey) {
 
-            
-            List<Restaurant> restaurantsInCity =
-            		restaurantrepo.findByAddress_City(city);
+        Customer customer = customerrepo
+                .findByMobno(mobno)
+                .orElseThrow(() ->
+                        new CustomerNotFoundException("Customer not found"));
 
-            
-            List<Restaurant> filteredRestaurants = restaurantsInCity.stream()
-                    .filter(r ->
-                            r.getName().toLowerCase().contains(searchkey.toLowerCase())
-                            ||
-                            r.getMenuItems().stream()
-                                    .anyMatch(i ->
-                                            i.getName().toLowerCase()
-                                                    .contains(searchkey.toLowerCase())
-                                    )
-                    )
-                    .toList();
+        String city = customer.getAddress().getCity();
 
-          
-            ResponceStructure<List<Restaurant>> rs = new ResponceStructure<>();
-            rs.setStatusCode(HttpStatus.OK.value());
-            rs.setMessage("Search completed successfully");
-            rs.setData(filteredRestaurants);
+        List<Restaurant> restaurantsInCity =
+                restaurantrepo.findByAddress_City(city);
 
-            return new ResponseEntity<>(rs, HttpStatus.OK);
-        }
+        List<Restaurant> filteredRestaurants = restaurantsInCity.stream()
+                .filter(r ->
+                        r.getName().toLowerCase().contains(searchkey.toLowerCase())
+                                ||
+                                r.getMenuItems().stream()
+                                        .anyMatch(i ->
+                                                i.getName().toLowerCase()
+                                                        .contains(searchkey.toLowerCase())
+                                        )
+                )
+                .toList();
 
+        ResponceStructure<List<Restaurant>> rs = new ResponceStructure<>();
+        rs.setStatusCode(HttpStatus.OK.value());
+        rs.setMessage("Search completed successfully");
+        rs.setData(filteredRestaurants);
 
-       
-        
-
-
-   
+        return new ResponseEntity<>(rs, HttpStatus.OK);
+    }
 }

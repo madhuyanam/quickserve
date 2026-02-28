@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 public class Restaurant {
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
-private int id;
+	private int id;
 	private String name;
 	@Column(unique = true)
 	private String mail;
@@ -31,13 +31,13 @@ private int id;
 	private String  description;
 	private int packagingFee;
 	private String type;
-	
-	 @OneToMany(mappedBy="restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<Item> menuItems;
 
-	    @OneToMany(mappedBy="restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<Order> orders;
-	
+	@OneToMany(mappedBy="restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Item> menuItems;
+
+	@OneToMany(mappedBy="restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Order> orders;
+
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")
 	private Address address;
@@ -166,6 +166,6 @@ private int id;
 				+ type + ", menuItems=" + menuItems + ", orders=" + orders + ", address=" + address + "]";
 	}
 
-	
-	
+
+
 }

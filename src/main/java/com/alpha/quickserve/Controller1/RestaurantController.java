@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,37 +21,47 @@ import com.alpha.quickserve.entity.Restaurant;
 @RestController
 @RequestMapping("/restaurant")
 public class RestaurantController {
-	
+
 	@Autowired
 	private RestaurantService restaurantservice;
-	
+
 	@PostMapping("/register")
 	public ResponseEntity<ResponceStructure<Restaurant>> saveRestaurant(@RequestBody RestaurantDTO rdto){
 
-	    return restaurantservice.save(rdto);
+		return restaurantservice.save(rdto);
 
-		
+
 	}
-	
-	
-	 @GetMapping("/findrestaurant")
-	    public ResponseEntity<ResponceStructure<Restaurant>> findrestaurant(
-	            @RequestParam long mobno) {
-	        return restaurantservice.findrestaurant(mobno);
-	    }
 
-	 @DeleteMapping("/deletecustomer")
-	    public ResponseEntity<ResponceStructure<Restaurant>> deleteCustomer(
-	            @RequestParam long mobno) {
-	        return restaurantservice.deleteCustomer(mobno);
-	    }
 
-	    @PatchMapping("/additemtomenu")
-	    public ResponseEntity<ResponceStructure<Restaurant>> addItemToMenu(
-	            @RequestParam long restaurantmobno,
-	            @RequestBody Item item) {
-	        return restaurantservice.addItemToMenu(restaurantmobno, item);
-	    }
+	@GetMapping("/findrestaurant")
+	public ResponseEntity<ResponceStructure<Restaurant>> findrestaurant(
+			@RequestParam long mobno) {
+		return restaurantservice.findrestaurant(mobno);
+	}
+
+	@DeleteMapping("/delete/{mobno}")
+	public ResponseEntity<ResponceStructure<String>> deleteRestaurant(
+	        @PathVariable("mobno") long mobno) {
+
+	    return restaurantservice.deleteRestaurant(mobno);
+	}
+
+	@PatchMapping("/additemtomenu")
+	public ResponseEntity<ResponceStructure<Restaurant>> addItemToMenu(
+			@RequestParam long restaurantmobno,
+			@RequestBody Item item) {
+		return restaurantservice.addItemToMenu(restaurantmobno, item);
+	}
+	@PatchMapping("/updateitemavailability")
+	public ResponseEntity<ResponceStructure<String>> updateItemAvailability(
+	        @RequestParam long restaurantmobno,
+	        @RequestParam int itemid,
+	        @RequestParam String availability) {
+
+	    return restaurantservice.updateItemAvailability(
+	            restaurantmobno, itemid, availability);
+	}
 
 
 }

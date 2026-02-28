@@ -26,9 +26,9 @@ public class DelivaryPartner {
 	private String vehicileno;
 
 	@OneToOne
-	 @JoinColumn(name = "address_id")
+	@JoinColumn(name = "address_id")
 	private  Address address ;
-	
+
 	@OneToMany(mappedBy = "delivaryPartner")
 	private List <Order> order;
 
@@ -128,9 +128,9 @@ public class DelivaryPartner {
 				+ ", status=" + status + ", vehicileno=" + vehicileno + ", address=" + address + ", order=" + order
 				+ "]";
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 }
