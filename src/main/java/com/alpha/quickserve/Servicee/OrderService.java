@@ -30,6 +30,9 @@ public class OrderService {
 
     @Autowired
     private OrderRepo orderRepo;
+    
+//    @Autowired
+//    private RedisService redisService;
 
     public ResponseEntity<ResponceStructure<Order>> placeOrder(long mobno) {
 
@@ -77,6 +80,9 @@ public class OrderService {
 
         int otp = (int)(Math.random() * 9000) + 1000;
         order.setOtp(otp);
+        
+        
+       
 
         Order savedOrder = orderRepo.save(order);
 

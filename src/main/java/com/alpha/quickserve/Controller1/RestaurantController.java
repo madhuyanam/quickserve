@@ -53,4 +53,16 @@ public class RestaurantController {
 	    }
 
 
+	    @PatchMapping("/updateitemavailability")
+		public ResponseEntity<ResponceStructure<String>> updateItemAvailability(
+		        @RequestParam long restaurantmobno,
+		        @RequestParam int itemid,
+		        @RequestParam String availability) {
+
+		    return restaurantservice.updateItemAvailability(
+		            restaurantmobno, itemid, availability);
+		}
+	    
+	    
+	    
 }
