@@ -215,75 +215,7 @@ public ResponseEntity<ResponceStructure<List<Restaurant>>> searchItemOrRestauran
        
        
        
-       //*----------Placing the Order-----------*//
-
-       @Transactional
-       public ResponseEntity<ResponceStructure<Order>> placeOrder(long mobno) {
-
-           Customer customer = customerrepo.findByMobno(mobno);
-
-           if (customer == null) {
-               throw new CustomerNotFoundException(
-                       "Customer not found with mobile: " + mobno);
-           }
-
-           List<CartItem> cart = customer.getCart();
-
-           if (cart == null || cart.isEmpty()) {
-               throw new RuntimeException("Cart is empty");
-           }
-
-           Order order = new Order();
-
-           order.setCustomer(customer);
-           order.setStatus("PLACED");
-           order.setDate(java.time.LocalDate.now().toString());
-
-           // Restaurant (same restaurant because you restricted in cart)
-           Restaurant restaurant =
-                   cart.get(0).getItem().getRestaurant();
-
-           order.setRestaurant(restaurant);
-           order.setPickupaddress(
-                   restaurant.getAddress().getStreet());
-
-           order.setDelivaryAddress(
-                   customer.getAddress().getStreet());
-
-           int totalCost = 0;
-
-           List<Item> orderItems = new ArrayList<>();
-
-           for (CartItem ci : cart) {
-
-               totalCost += ci.getItem().getPrice()
-                       * ci.getQuantity();
-
-               orderItems.add(ci.getItem());
-           }
-
-           order.setCost(totalCost);
-           order.setItem(orderItems);
-
-           // generate OTP
-           int otp = (int)(Math.random() * 9000) + 1000;
-           order.setOtp(otp);
-
-           Order savedOrder = orderRepo.save(order);
-
-           // clear cart after placing order
-           cart.clear();
-           customerrepo.save(customer);
-
-           ResponceStructure<Order> rs =
-                   new ResponceStructure<>();
-
-           rs.setStatusCode(HttpStatus.CREATED.value());
-           rs.setMessage("Order Placed Successfully");
-           rs.setData(savedOrder);
-
-           return new ResponseEntity<>(rs, HttpStatus.CREATED);
-       }  
+      
   
 
    

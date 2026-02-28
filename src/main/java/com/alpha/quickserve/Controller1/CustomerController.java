@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alpha.quickserve.DTO.CustomerDto;
 import com.alpha.quickserve.ResponceStructure.ResponceStructure;
 import com.alpha.quickserve.Servicee.CustomerService;
+import com.alpha.quickserve.Servicee.OrderService;
+
 import com.alpha.quickserve.entity.Customer;
 import com.alpha.quickserve.entity.Order;
 import com.alpha.quickserve.entity.Restaurant;
@@ -29,6 +31,8 @@ public class CustomerController {
     @Autowired
     private CustomerService customerservice;
     
+    @Autowired
+    private OrderService orderService;
     
    
 
@@ -70,13 +74,19 @@ public class CustomerController {
             return customerservice.addToCart(
                     customermobno, itemid, quantity);
         }
-       
+        
+        
+        
         @PostMapping("/placeorder")
-        public ResponseEntity<ResponceStructure<Order>> 
+        public ResponseEntity<ResponceStructure<Order>>
         placeOrder(@RequestBody Map<String, Long> request) {
 
             long mobno = request.get("mobno");
-            return customerservice.placeOrder(mobno);
-        }     
+            return orderService.placeOrder(mobno);
+        }
+        
+       
+        
+        
     }
 
