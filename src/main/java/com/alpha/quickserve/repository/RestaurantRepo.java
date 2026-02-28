@@ -11,9 +11,17 @@ import com.alpha.quickserve.entity.Restaurant;
 
 @Repository
 public interface RestaurantRepo extends JpaRepository<Restaurant, Integer>{
+<<<<<<< HEAD
 
 	Optional<Restaurant> findByMobno(long mobno);
 
+=======
+	
+	Optional<Restaurant> findByMobno(long mobno);
+	
+	 void deleteByMobno(long mobno);
+	
+>>>>>>> cda2d98be7f7ad05e9264d509f014761d1e0be07
 	List<Restaurant> findByAddress_City(String city);
 
 

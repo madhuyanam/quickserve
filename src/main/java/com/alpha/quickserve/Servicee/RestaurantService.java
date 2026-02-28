@@ -79,6 +79,10 @@ public class RestaurantService {
 		return new ResponseEntity<>(rs, HttpStatus.OK);
 	}
 
+<<<<<<< HEAD
+=======
+	public ResponseEntity<ResponceStructure<Restaurant>> deleteRestaurant(long mobno) {
+>>>>>>> cda2d98be7f7ad05e9264d509f014761d1e0be07
 
 
 	public ResponseEntity<ResponceStructure<String>> deleteRestaurant(long mobno) {

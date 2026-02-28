@@ -142,4 +142,11 @@ public class Address {
 				+ area + ", landmark=" + landmark + ", city=" + city + ", district=" + district + ", state=" + state
 				+ ", country=" + country + ", pincode=" + pincode + "]";
 	}
+<<<<<<< HEAD
+=======
+	
+	
+	
+
+>>>>>>> cda2d98be7f7ad05e9264d509f014761d1e0be07
 }

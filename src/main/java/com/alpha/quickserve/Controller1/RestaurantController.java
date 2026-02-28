@@ -33,6 +33,14 @@ public class RestaurantController {
 
 	}
 
+<<<<<<< HEAD
+=======
+	 @DeleteMapping("/deleterestaurant")
+	    public ResponseEntity<ResponceStructure<Restaurant>> deleteRestaurant(
+	            @RequestParam long mobno) {
+	        return restaurantservice.deleteRestaurant(mobno);
+	    }
+>>>>>>> cda2d98be7f7ad05e9264d509f014761d1e0be07
 
 	@GetMapping("/findrestaurant")
 	public ResponseEntity<ResponceStructure<Restaurant>> findrestaurant(

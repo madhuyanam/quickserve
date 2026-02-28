@@ -12,10 +12,16 @@ public class CartItem {
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
 	private int id;
+<<<<<<< HEAD
 	@ManyToOne
 	@JoinColumn(name = "item_id")
+=======
+	 @ManyToOne
+	 @JoinColumn(name = "item_id")
+>>>>>>> cda2d98be7f7ad05e9264d509f014761d1e0be07
 	private Item item;
 	private int quantity;
+	
 	public int getId() {
 		return id;
 	}
