@@ -122,7 +122,7 @@ public class RestaurantService {
 	    ResponceStructure<Restaurant> rs =
 	            new ResponceStructure<>();
 
-	    rs.setStatusCode(HttpStatus.OK.value());
+	    rs.setStatusCode(HttpStatus.OK.value());	
 	    rs.setMessage("Item added to menu successfully");
 	    rs.setData(restaurant);
 
@@ -130,7 +130,6 @@ public class RestaurantService {
 	}
 	
 	public ResponseEntity<ResponceStructure<String>> updateItemAvailability(long restaurantmobno,int itemid,String availability) {
-
 		Restaurant restaurant = restaurantrepo.findByMobno(restaurantmobno).orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
 		Item item = restaurant.getMenuItems().stream().filter(i -> i.getId() == itemid).findFirst().orElseThrow(() -> new RuntimeException("Item not found"));
@@ -138,7 +137,7 @@ public class RestaurantService {
 		item.setAvailability(availability);
 
 		restaurantrepo.save(restaurant);
-		
+
 		ResponceStructure<String> rs = new ResponceStructure<>();
 		rs.setStatusCode(HttpStatus.OK.value());
 		rs.setMessage("Item availability updated successfully");
@@ -146,4 +145,6 @@ public class RestaurantService {
 
 		return new ResponseEntity<>(rs, HttpStatus.OK);
 	}
+	
+	
 }

@@ -62,7 +62,4 @@ public class RestaurantController {
 		    return restaurantservice.updateItemAvailability(
 		            restaurantmobno, itemid, availability);
 		}
-	    
-	    
-	    
 }
