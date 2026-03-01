@@ -1,31 +1,58 @@
-//package com.alpha.quickserve.Servicee;
-//
-//import java.util.concurrent.TimeUnit;
-//
-//import org.springframework.beans.factory.annotation.Autowired;
-//
-//import org.springframework.stereotype.Service;
-//
-//@Service
-//public class RedisService {
-//
-//    @Autowired
-//    private RedisTemplate<String, String> redisTemplate;
-//
-//    public void save(String key, String value) {
-//        redisTemplate.opsForValue().set(key, value);
-//    }
-//
-//    public String get(String key) {
-//        return redisTemplate.opsForValue().get(key);
-//    }
-//
-//    public void delete(String key) {
-//        redisTemplate.delete(key);
-//    }
-//
-//    public void saveWithExpiry(String key, String value, long seconds) {
-//        redisTemplate.opsForValue()
-//                     .set(key, value, seconds, TimeUnit.SECONDS);
-//    }
-//}
+package com.alpha.quickserve.Servicee;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Circle;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.GeoResults;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
+import org.springframework.data.redis.connection.RedisGeoCommands;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
+    private static final String KEY = "deliverypartner:location";
+
+    
+    public String updateDPloc(Integer dpid, double latitude, double longitude) {
+
+        redisTemplate.opsForGeo()
+                .add(KEY,
+                        new Point(longitude, latitude), 
+                        dpid.toString());
+
+        return "Location Updated Successfully";
+    }
+
+  
+    public List<String> findNearbyPartners(
+            double latitude,
+            double longitude,
+            double radiusKm) {
+
+        Circle searchArea = new Circle(
+                new Point(longitude, latitude),
+                new Distance(radiusKm, Metrics.KILOMETERS)
+        );
+
+        GeoResults<RedisGeoCommands.GeoLocation<String>> results =
+                redisTemplate.opsForGeo().radius(KEY, searchArea);
+
+        if (results == null) {
+            return List.of();
+        }
+
+        return results.getContent()
+                .stream()
+                .map(result -> result.getContent().getName())
+                .collect(Collectors.toList());
+    }
+}
