@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.client.RestTemplate;
+
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 @SpringBootApplication
 public class QuickserveApplication {
 
@@ -32,6 +34,5 @@ public class QuickserveApplication {
 	    return template;
 	  }
 
-	
 	
 }
