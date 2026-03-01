@@ -123,7 +123,7 @@ public class RestaurantService {
 	    ResponceStructure<Restaurant> rs =
 	            new ResponceStructure<>();
 
-	    rs.setStatusCode(HttpStatus.OK.value());
+	    rs.setStatusCode(HttpStatus.OK.value());	
 	    rs.setMessage("Item added to menu successfully");
 	    rs.setData(restaurant);
 

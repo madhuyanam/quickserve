@@ -84,8 +84,8 @@ public class CustomerController {
             long mobno = request.get("mobno");
             return orderService.placeOrder(mobno);
         }
-        
-       
+ 
+
         
         
     }
