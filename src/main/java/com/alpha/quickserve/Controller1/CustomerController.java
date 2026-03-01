@@ -1,5 +1,6 @@
 package com.alpha.quickserve.Controller1;
 
+
 import java.util.List;
 import java.util.Map;
 
@@ -27,10 +28,6 @@ import com.alpha.quickserve.entity.Restaurant;
 @RequestMapping("/customer")
 public class CustomerController {
 
-<<<<<<< HEAD
-	@Autowired
-	private CustomerService customerservice;
-=======
     @Autowired
     private CustomerService customerservice;
     
@@ -38,25 +35,11 @@ public class CustomerController {
     private OrderService orderService;
     
    
->>>>>>> cda2d98be7f7ad05e9264d509f014761d1e0be07
 
-	@PostMapping("/register")
-	public ResponseEntity<ResponceStructure<Customer>> saveCustomer(
-			@RequestBody CustomerDto cdto) {
+    @PostMapping("/register")
+    public ResponseEntity<ResponceStructure<Customer>> saveCustomer(
+             @RequestBody CustomerDto cdto) {
 
-<<<<<<< HEAD
-		return customerservice.saveCustomer(cdto);
-	}
-	@GetMapping("/find/{mobno}")
-	public ResponseEntity<ResponceStructure<Customer>> find(@PathVariable("mobno") long mobno) {
-		return customerservice.findByMobno(mobno);
-	}
-
-	@DeleteMapping("/delete/{mobno}")
-	public ResponseEntity<ResponceStructure<String>> delete(@PathVariable("mobno") long mobno) {
-		return customerservice.deleteByMobno(mobno);
-	}
-=======
         return customerservice.saveCustomer(cdto);
     }
         @GetMapping("/find/{mobno}")
@@ -77,25 +60,10 @@ public class CustomerController {
         searchItemOrRestaurant(
                 @RequestParam long custmob,
                 @RequestParam String searchkey) {
->>>>>>> cda2d98be7f7ad05e9264d509f014761d1e0be07
 
-	@GetMapping("/searchitemorrestaurant")
-	public ResponseEntity<ResponceStructure<List<Restaurant>>> 
-	searchItemOrRestaurant(
-			@RequestParam long custmob,
-			@RequestParam String searchkey) {
+            return customerservice.searchItemOrRestaurant(custmob, searchkey);
+        }
 
-<<<<<<< HEAD
-		return customerservice.searchItemOrRestaurant(custmob, searchkey);
-	}
-
-
-
-
-
-
-}
-=======
         
         @PostMapping("/addtocart")
         public ResponseEntity<ResponceStructure<String>> addToCart(
@@ -121,5 +89,3 @@ public class CustomerController {
         
         
     }
->>>>>>> cda2d98be7f7ad05e9264d509f014761d1e0be07
-

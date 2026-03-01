@@ -23,13 +23,7 @@ public class Customer {
 	private String name;
 
 	@Column(unique = true)
-<<<<<<< HEAD
 	private Long  mobno;
-
-=======
-	private long  mobno;
-	
->>>>>>> cda2d98be7f7ad05e9264d509f014761d1e0be07
 	@Column(unique = true)
 	private String mailid;
 
@@ -148,15 +142,5 @@ public class Customer {
 		return "Customer [id=" + id + ", name=" + name + ", mobno=" + mobno + ", mailid=" + mailid + ", gender="
 				+ gender + ", address=" + address + ", order=" + order + ", item=" + item + ", cart=" + cart + "]";
 	}
-
-
-
-
-
-
-
-
-
-
 
 }

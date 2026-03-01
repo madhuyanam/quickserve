@@ -10,16 +10,11 @@ public class QuickserveApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(QuickserveApplication.class, args);
-		
-		
+
+
 	}
 	@Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
-
-	
-	
-	
-	
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
 }

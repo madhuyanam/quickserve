@@ -1,6 +1,7 @@
 package com.alpha.quickserve.entity;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
