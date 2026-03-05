@@ -19,7 +19,7 @@ public class RedisService {
     private RedisTemplate<String,String> redisTemplate;
 
     // 1️⃣ Update Delivery Partner Location
-    public String updateDpLoc(Integer partnerid,double latitude,double longitude){
+	public String updateDpLoc(Integer partnerid,double latitude,double longitude){
 
         redisTemplate.opsForGeo()
                 .add("deliverypartner:location",

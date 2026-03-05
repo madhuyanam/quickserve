@@ -97,6 +97,8 @@ public class CustomerService {
 
         if(customer.getCart().isEmpty()){
             throw new RuntimeException("Cart is empty");
+            // go with custome excetion
+            //handle in geh
         }
 
         // Get restaurant from first cart item
@@ -114,9 +116,13 @@ public class CustomerService {
         double platformFees = 5;
 
         double tax = itemCost * 0.05;
-
+        
+        // get the distance between customer and restaurant 
+        // calculate the delivery charge .
+        
         double deliveryCharges = 20;
-
+        
+        // get the above calcuated distance 
         double distance = 2.5;
 
         double totalCost =
@@ -159,8 +165,11 @@ public class CustomerService {
 
         Order order = orderRepo.findById(orderid)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found"));
-
+        Restaurant rest = order.getItem().get(0).getRestaurant();
+        order.setRestaurant(rest);
+        rest.getOrders().add(order);
         order.setStatus("PLACED");
+        // save order also
         orderRepo.save(order);
 
         ResponceStructure<String> rs = new ResponceStructure<>();

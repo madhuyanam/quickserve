@@ -58,4 +58,7 @@ public class DeliveryPartnerController {
 
 		return deliveryPartnerService.acceptOrder(orderid,partnerid);
 	}
+	
+	// get direction 
+	
 }
