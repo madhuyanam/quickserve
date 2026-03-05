@@ -1,7 +1,6 @@
 package com.alpha.quickserve.entity;
 
 import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,30 +12,24 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Item {
+
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
 	private int id;
+
 	private String name;
 	private String description;
 	private Integer price;
 	private Integer unit;
 	private String type;
 	private String availability;
-	private Integer  rating;
+	private Integer rating;
 	private String image;
 	private Integer numberOfServices;
-	
-    @ManyToOne
-    @JoinColumn(name = "restaurant_id")
-    private Restaurant restaurant;
-    
-    @ManyToMany
-    @JoinTable(
-        name = "customer_item",
-        joinColumns = @JoinColumn(name = "item_id"),
-        inverseJoinColumns = @JoinColumn(name = "customer_id")
-    )
-    private List<Customer> customers;
+
+	@ManyToOne
+	@JoinColumn(name = "restaurant_id")
+	private Restaurant restaurant;
 
 	public int getId() {
 		return id;
@@ -126,14 +119,6 @@ public class Item {
 		this.restaurant = restaurant;
 	}
 
-	public List<Customer> getCustomers() {
-		return customers;
-	}
-
-	public void setCustomers(List<Customer> customers) {
-		this.customers = customers;
-	}
-
 	public Item(int id, String name, String description, Integer price, Integer unit, String type, String availability,
 			Integer rating, String image, Integer numberOfServices, Restaurant restaurant, List<Customer> customers) {
 		super();
@@ -148,7 +133,6 @@ public class Item {
 		this.image = image;
 		this.numberOfServices = numberOfServices;
 		this.restaurant = restaurant;
-		this.customers = customers;
 	}
 
 	public Item() {
@@ -159,11 +143,10 @@ public class Item {
 	public String toString() {
 		return "Item [id=" + id + ", name=" + name + ", description=" + description + ", price=" + price + ", unit="
 				+ unit + ", type=" + type + ", availability=" + availability + ", rating=" + rating + ", image=" + image
-				+ ", numberOfServices=" + numberOfServices + ", restaurant=" + restaurant + ", customers=" + customers
-				+ "]";
+				+ ", numberOfServices=" + numberOfServices + ", restaurant=" + restaurant+ "]";
 	}
 
-    
-	
+
+
 
 }

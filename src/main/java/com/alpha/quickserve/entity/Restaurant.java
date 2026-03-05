@@ -1,7 +1,6 @@
 package com.alpha.quickserve.entity;
 
 import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,31 +12,34 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-
 @Entity
-@Table(name = "restaurants")
+@Table(name = "restaurant")
 public class Restaurant {
+	
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
-    private int id;
+	private int id;
+	
 	private String name;
+	
 	@Column(unique = true)
 	private String mail;
+	
 	@Column(unique = true)
 	private long mobno;
-	
+
 	private String status;
 	private double ratings;
 	private String  description;
 	private int packagingFee;
 	private String type;
-	
-	 @OneToMany(mappedBy="restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<Item> menuItems;
 
-	    @OneToMany(mappedBy="restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<Order> orders;
-	
+	@OneToMany(mappedBy="restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Item> menuItems;
+
+	@OneToMany(mappedBy="restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Order> orders;
+
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")
 	private Address address;
@@ -166,6 +168,6 @@ public class Restaurant {
 				+ type + ", menuItems=" + menuItems + ", orders=" + orders + ", address=" + address + "]";
 	}
 
-	
-	
+
+
 }
