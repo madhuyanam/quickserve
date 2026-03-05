@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.alpha.quickserve.dto.OrderNeedConsentDto;
 import com.alpha.quickserve.entity.*;
 import com.alpha.quickserve.exception.*;
 import com.alpha.quickserve.repository.*;
@@ -85,7 +86,11 @@ public class CustomerService {
     }
 
     // Place Order
-    public ResponseEntity<ResponceStructure<Order>> placeOrder(long mobno){
+    public ResponseEntity<ResponceStructure<OrderNeedConsentDto>> placingOrder(
+            long mobno,
+            String paymentType,
+            String addressType,
+            String specialRequest){
 
         Customer customer = customerRepo.findByMobno(mobno)
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
@@ -94,18 +99,59 @@ public class CustomerService {
             throw new RuntimeException("Cart is empty");
         }
 
+        // Get restaurant from first cart item
+        Restaurant restaurant =
+                customer.getCart().get(0).getItem().getRestaurant();
+
+        double itemCost = 0;
+
+        for(CartItem ci : customer.getCart()){
+            itemCost += ci.getItem().getPrice() * ci.getQuantity();
+        }
+
+        double packagingFees = restaurant.getPackagingFee();
+
+        double platformFees = 5;
+
+        double tax = itemCost * 0.05;
+
+        double deliveryCharges = 20;
+
+        double distance = 2.5;
+
+        double totalCost =
+                itemCost + packagingFees + platformFees + tax + deliveryCharges;
+
         Order order = new Order();
+
         order.setCustomer(customer);
+        order.setRestaurant(restaurant);
+        order.setSpecialRequest(specialRequest);
         order.setStatus("WAITING_FOR_CONSENT");
+        order.setCost((int) totalCost);
 
         Order savedOrder = orderRepo.save(order);
 
-        ResponceStructure<Order> rs = new ResponceStructure<>();
-        rs.setStatusCode(HttpStatus.CREATED.value());
-        rs.setMessage("Order Created - Waiting for Confirmation");
-        rs.setData(savedOrder);
+        OrderNeedConsentDto dto = new OrderNeedConsentDto();
 
-        return new ResponseEntity<>(rs,HttpStatus.CREATED);
+        dto.setOrderId(savedOrder.getId());
+        dto.setRestaurantName(restaurant.getName());
+        dto.setItemCost(itemCost);
+        dto.setPackagingFees(packagingFees);
+        dto.setPlatformFees(platformFees);
+        dto.setTax(tax);
+        dto.setDeliveryCharges(deliveryCharges);
+        dto.setDistance(distance);
+        dto.setTotalCost(totalCost);
+
+        ResponceStructure<OrderNeedConsentDto> rs =
+                new ResponceStructure<>();
+
+        rs.setStatusCode(HttpStatus.CREATED.value());
+        rs.setMessage("Order created - waiting for customer consent");
+        rs.setData(dto);
+
+        return new ResponseEntity<>(rs, HttpStatus.CREATED);
     }
 
     // Confirm Order

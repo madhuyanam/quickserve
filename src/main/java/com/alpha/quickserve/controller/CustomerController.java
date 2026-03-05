@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.alpha.quickserve.dto.OrderNeedConsentDto;
 import com.alpha.quickserve.entity.CartItem;
 import com.alpha.quickserve.entity.Customer;
 import com.alpha.quickserve.entity.Order;
@@ -56,8 +57,13 @@ public class CustomerController {
 
     // Place Order
     @PostMapping("/placeorder")
-    public ResponseEntity<ResponceStructure<Order>> placeOrder(@RequestParam long mobno){
-        return customerService.placeOrder(mobno);
+    public ResponseEntity<ResponceStructure<OrderNeedConsentDto>> placeOrder(
+            @RequestParam long mobno,
+            @RequestParam String paymentType,
+            @RequestParam String addressType,
+            @RequestParam String specialRequest) {
+
+        return customerService.placingOrder(mobno, paymentType, addressType, specialRequest);
     }
 
     // Confirm Order
@@ -73,7 +79,7 @@ public class CustomerController {
     }
 
     // Search Restaurant or Item
-    @GetMapping("/search")
+    @GetMapping("/searchitemorrestaurant")
     public ResponseEntity<ResponceStructure<List<Restaurant>>> searchItemOrRestaurant(
             @RequestParam long mobno,
             @RequestParam String searchkey){
