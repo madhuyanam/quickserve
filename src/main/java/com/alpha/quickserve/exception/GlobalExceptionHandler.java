@@ -1,11 +1,11 @@
-package com.alpha.quickserve.Exception;
+package com.alpha.quickserve.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.alpha.quickserve.ResponceStructure.ResponceStructure;
+import com.alpha.quickserve.responcestructure.ResponceStructure;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	@ExceptionHandler(DeliveryPartnerNotFoundException.class)

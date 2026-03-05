@@ -1,8 +1,4 @@
-package com.alpha.quickserve.Servicee;
-
-
-
-
+package com.alpha.quickserve.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,37 +16,31 @@ import org.springframework.stereotype.Service;
 public class RedisService {
 
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String,String> redisTemplate;
 
-
-    private static final String KEY = "deliverypartner:location";
-
-    
-    public String updateDPloc(Integer dpid, double latitude, double longitude) {
+    // 1️⃣ Update Delivery Partner Location
+    public String updateDpLoc(Integer partnerid,double latitude,double longitude){
 
         redisTemplate.opsForGeo()
-                .add(KEY,
-                        new Point(longitude, latitude), 
-                        dpid.toString());
+                .add("deliverypartner:location",
+                        new Point(longitude,latitude),
+                        partnerid.toString());
 
-        return "Location Updated Successfully";
+        return "Location Updated";
     }
 
-  
-    public List<String> findNearbyPartners(
-            double latitude,
-            double longitude,
-            double radiusKm) {
+    // 2️⃣ Find Nearby Delivery Partners
+    public List<String> findNearbyPartners(double latitude,double longitude,double radiusKm){
 
-        Circle searchArea = new Circle(
-                new Point(longitude, latitude),
-                new Distance(radiusKm, Metrics.KILOMETERS)
-        );
+        Circle searchArea =
+                new Circle(new Point(longitude,latitude),
+                        new Distance(radiusKm, Metrics.KILOMETERS));
 
         GeoResults<RedisGeoCommands.GeoLocation<String>> results =
-                redisTemplate.opsForGeo().radius(KEY, searchArea);
+                redisTemplate.opsForGeo()
+                        .radius("deliverypartner:location", searchArea);
 
-        if (results == null) {
+        if(results == null){
             return List.of();
         }
 

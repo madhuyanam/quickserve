@@ -1,15 +1,12 @@
 package com.alpha.quickserve.entity;
 
 import java.util.List;
-import java.util.Optional;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -22,24 +19,21 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
 	private int id;
+	
 	private String status;
 	private int cost;
 	private int otp;
 
 	@ManyToOne
 	@JoinColumn(name = "delivery_partner_id")
-
-	private DelivaryPartner delivaryPartner;
+	private DeliveryPartner deliveryPartner;
 
 	private String pickupaddress;
-	private String delivaryAddress;
-
+	private String deliveryAddress;
 
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
-
-
 
 	@ManyToOne
 	@JoinColumn(name = "restaurant_id")
@@ -52,20 +46,18 @@ public class Order {
 	private String estimatedTime;
 	private int distance;
 	private int discount;
-	private String coupones;
+	private String coupons;
 	private String specialRequest;
-	private String delivaryInstructions;
+	private String deliveryInstructions;
 	private String date;
 
-
 	@ManyToMany
-
 	@JoinTable(
 			name = "order_item",
 			joinColumns = @JoinColumn(name = "order_id"),
 			inverseJoinColumns = @JoinColumn(name = "item_id")
 			)
-	private List<Item> item;
+	private List<Item> items;
 
 
 
@@ -97,13 +89,13 @@ public class Order {
 	}
 
 
-	public DelivaryPartner getDelivaryPartner() {
-		return delivaryPartner;
+	public DeliveryPartner getDeliveryPartner() {
+		return deliveryPartner;
 	}
 
 
-	public void setDelivaryPartner(DelivaryPartner delivaryPartner) {
-		this.delivaryPartner = delivaryPartner;
+	public void setDeliveryPartner(DeliveryPartner delivaryPartner) {
+		this.deliveryPartner = delivaryPartner;
 	}
 
 
@@ -118,12 +110,12 @@ public class Order {
 
 
 	public String getDelivaryAddress() {
-		return delivaryAddress;
+		return deliveryAddress;
 	}
 
 
 	public void setDelivaryAddress(String delivaryAddress) {
-		this.delivaryAddress = delivaryAddress;
+		this.deliveryAddress = delivaryAddress;
 	}
 
 
@@ -188,12 +180,12 @@ public class Order {
 
 
 	public String getCoupones() {
-		return coupones;
+		return coupons;
 	}
 
 
 	public void setCoupones(String coupones) {
-		this.coupones = coupones;
+		this.coupons = coupones;
 	}
 
 
@@ -208,12 +200,12 @@ public class Order {
 
 
 	public String getDelivaryInstructions() {
-		return delivaryInstructions;
+		return deliveryInstructions;
 	}
 
 
 	public void setDelivaryInstructions(String delivaryInstructions) {
-		this.delivaryInstructions = delivaryInstructions;
+		this.deliveryInstructions = delivaryInstructions;
 	}
 
 
@@ -228,16 +220,16 @@ public class Order {
 
 
 	public List<Item> getItem() {
-		return item;
+		return items;
 	}
 
 
 	public void setItem(List<Item> item) {
-		this.item = item;
+		this.items = item;
 	}
 
 
-	public Order(int id, String status, int cost, int otp, DelivaryPartner delivaryPartner, String pickupaddress,
+	public Order(int id, String status, int cost, int otp, DeliveryPartner delivaryPartner, String pickupaddress,
 			String delivaryAddress, Restaurant restaurant, Customer customer, Payment payment, String estimatedTime,
 			int distance, int discount, String coupones, String specialRequest, String delivaryInstructions,
 			String date, List<Item> item) {
@@ -246,19 +238,19 @@ public class Order {
 		this.status = status;
 		this.cost = cost;
 		this.otp = otp;
-		this.delivaryPartner = delivaryPartner;
+		this.deliveryPartner = delivaryPartner;
 		this.pickupaddress = pickupaddress;
-		this.delivaryAddress = delivaryAddress;
+		this.deliveryAddress = delivaryAddress;
 		this.restaurant = restaurant;
 		this.customer = customer;
 		this.payment = payment;
 		this.estimatedTime = estimatedTime;
 		this.distance = distance;
-		this.coupones = coupones;
+		this.coupons = coupones;
 		this.specialRequest = specialRequest;
-		this.delivaryInstructions = delivaryInstructions;
+		this.deliveryInstructions = delivaryInstructions;
 		this.date = date;
-		this.item = item;
+		this.items = item;
 	}
 
 
@@ -270,11 +262,11 @@ public class Order {
 	@Override
 	public String toString() {
 		return "Order [id=" + id + ", status=" + status + ", cost=" + cost + ", otp=" + otp + ", delivaryPartner="
-				+ delivaryPartner + ", pickupaddress=" + pickupaddress + ", delivaryAddress=" + delivaryAddress
+				+ deliveryPartner + ", pickupaddress=" + pickupaddress + ", delivaryAddress=" + deliveryAddress
 				+ ", restaurant=" + restaurant + ", customer=" + customer + ", payment=" + payment + ", estimatedTime="
-				+ estimatedTime + ", distance=" + distance + ", discount=" + discount + ", coupones=" + coupones
-				+ ", specialRequest=" + specialRequest + ", delivaryInstructions=" + delivaryInstructions + ", date="
-				+ date + ", item=" + item + "]";
+				+ estimatedTime + ", distance=" + distance + ", discount=" + discount + ", coupones=" + coupons
+				+ ", specialRequest=" + specialRequest + ", delivaryInstructions=" + deliveryInstructions + ", date="
+				+ date + ", item=" + items + "]";
 	}
 
 

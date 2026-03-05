@@ -1,7 +1,6 @@
 package com.alpha.quickserve.entity;
 
 import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,16 +12,19 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-
 @Entity
-@Table(name = "restaurants")
+@Table(name = "restaurant")
 public class Restaurant {
+	
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
 	private int id;
+	
 	private String name;
+	
 	@Column(unique = true)
 	private String mail;
+	
 	@Column(unique = true)
 	private long mobno;
 

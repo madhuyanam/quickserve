@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.alpha.quickserve.entity.Payment;
 @Repository
-public interface PaymentRepo extends JpaRepository<Payment, Integer>{
+public interface PaymentRepository extends JpaRepository<Payment, Integer>{
 
 }

@@ -1,4 +1,4 @@
-package com.alpha.quickserve.ResponceStructure;
+package com.alpha.quickserve.responcestructure;
 
 public class ResponceStructure<T> {
 

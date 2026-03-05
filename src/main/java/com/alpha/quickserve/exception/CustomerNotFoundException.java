@@ -1,4 +1,4 @@
-package com.alpha.quickserve.Exception;
+package com.alpha.quickserve.exception;
 
 public class CustomerNotFoundException extends RuntimeException {
 	public CustomerNotFoundException(String message) {

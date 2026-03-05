@@ -12,15 +12,20 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class DelivaryPartner {
+public class DeliveryPartner {
+
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
 	private int id;
+
 	private String name;
+
 	@Column(unique = true)
 	private long mob;
+
 	@Column(unique = true)
 	private String mail;
+
 	private double  rating;
 	private String status ;
 	private String vehicileno;
@@ -29,13 +34,12 @@ public class DelivaryPartner {
 	@JoinColumn(name = "address_id")
 	private  Address address ;
 
-	@OneToMany(mappedBy = "delivaryPartner")
+	@OneToMany(mappedBy = "deliveryPartner")
 	private List <Order> order;
 
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -43,7 +47,6 @@ public class DelivaryPartner {
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -51,7 +54,6 @@ public class DelivaryPartner {
 	public long getMob() {
 		return mob;
 	}
-
 	public void setMob(long mob) {
 		this.mob = mob;
 	}
@@ -59,7 +61,6 @@ public class DelivaryPartner {
 	public String getMail() {
 		return mail;
 	}
-
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
@@ -67,7 +68,6 @@ public class DelivaryPartner {
 	public double getRating() {
 		return rating;
 	}
-
 	public void setRating(double rating) {
 		this.rating = rating;
 	}
@@ -75,7 +75,6 @@ public class DelivaryPartner {
 	public String getStatus() {
 		return status;
 	}
-
 	public void setStatus(String status) {
 		this.status = status;
 	}
@@ -83,7 +82,6 @@ public class DelivaryPartner {
 	public String getVehicileno() {
 		return vehicileno;
 	}
-
 	public void setVehicileno(String vehicileno) {
 		this.vehicileno = vehicileno;
 	}
@@ -91,7 +89,6 @@ public class DelivaryPartner {
 	public Address getAddress() {
 		return address;
 	}
-
 	public void setAddress(Address address) {
 		this.address = address;
 	}
@@ -99,12 +96,11 @@ public class DelivaryPartner {
 	public List<Order> getOrder() {
 		return order;
 	}
-
 	public void setOrder(List<Order> order) {
 		this.order = order;
 	}
 
-	public DelivaryPartner(int id, String name, long mob, String mail, double rating, String status, String vehicileno,
+	public DeliveryPartner(int id, String name, long mob, String mail, double rating, String status, String vehicileno,
 			Address address, List<Order> order) {
 		super();
 		this.id = id;
@@ -118,7 +114,7 @@ public class DelivaryPartner {
 		this.order = order;
 	}
 
-	public DelivaryPartner() {
+	public DeliveryPartner() {
 		super();
 	}
 
@@ -128,9 +124,5 @@ public class DelivaryPartner {
 				+ ", status=" + status + ", vehicileno=" + vehicileno + ", address=" + address + ", order=" + order
 				+ "]";
 	}
-
-
-
-
 
 }

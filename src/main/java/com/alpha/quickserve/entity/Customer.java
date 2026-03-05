@@ -2,8 +2,6 @@ package com.alpha.quickserve.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,46 +9,41 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+
 @Entity
 public class Customer {
+	
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
 	private int id;
+	
 	private String name;
 
 	@Column(unique = true)
 	private Long  mobno;
+	
 	@Column(unique = true)
 	private String mailid;
 
 	private String gender;
 
 	@OneToOne
-
 	@JoinColumn(name = "address_id")
 	private Address address;
 
 	@OneToMany(mappedBy = "customer")
-	List<Order> order;
-
-
-	@ManyToMany(mappedBy = "customers")
-	private List<Item>item;
-
+	List<Order> orders;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "customer_id")   
-	private List<CartItem> cart = new ArrayList<>();
-
+    @JoinColumn(name = "customer_id")
+    private List<CartItem> cart = new ArrayList<>();
 
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -58,7 +51,6 @@ public class Customer {
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -66,7 +58,6 @@ public class Customer {
 	public long getMobno() {
 		return mobno;
 	}
-
 	public void setMobno(long mobno) {
 		this.mobno = mobno;
 	}
@@ -74,7 +65,6 @@ public class Customer {
 	public String getMailid() {
 		return mailid;
 	}
-
 	public void setMailid(String mailid) {
 		this.mailid = mailid;
 	}
@@ -82,7 +72,6 @@ public class Customer {
 	public String getGender() {
 		return gender;
 	}
-
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
@@ -90,31 +79,20 @@ public class Customer {
 	public Address getAddress() {
 		return address;
 	}
-
 	public void setAddress(Address address) {
 		this.address = address;
 	}
 
 	public List<Order> getOrder() {
-		return order;
+		return orders;
 	}
-
 	public void setOrder(List<Order> order) {
-		this.order = order;
-	}
-
-	public List<Item> getItem() {
-		return item;
-	}
-
-	public void setItem(List<Item> item) {
-		this.item = item;
+		this.orders = order;
 	}
 
 	public List<CartItem> getCart() {
 		return cart;
 	}
-
 	public void setCart(List<CartItem> cart) {
 		this.cart = cart;
 	}
@@ -128,8 +106,7 @@ public class Customer {
 		this.mailid = mailid;
 		this.gender = gender;
 		this.address = address;
-		this.order = order;
-		this.item = item;
+		this.orders = order;
 		this.cart = cart;
 	}
 
@@ -140,7 +117,7 @@ public class Customer {
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", name=" + name + ", mobno=" + mobno + ", mailid=" + mailid + ", gender="
-				+ gender + ", address=" + address + ", order=" + order + ", item=" + item + ", cart=" + cart + "]";
+				+ gender + ", address=" + address + ", order=" + orders + ", cart=" + cart + "]";
 	}
 
 }
