@@ -19,7 +19,7 @@ public class RedisService {
     private RedisTemplate<String,String> redisTemplate;
 
     // 1️⃣ Update Delivery Partner Location
-    public String updateDpLoc(Integer partnerid,double latitude,double longitude){
+	public String updateDpLoc(Integer partnerid,double latitude,double longitude){
 
         redisTemplate.opsForGeo()
                 .add("deliverypartner:location",
@@ -29,7 +29,7 @@ public class RedisService {
         return "Location Updated";
     }
 
-    // 2️⃣ Find Nearby Delivery Partners
+    //Find Nearby Delivery Partners
     public List<String> findNearbyPartners(double latitude,double longitude,double radiusKm){
 
         Circle searchArea =
