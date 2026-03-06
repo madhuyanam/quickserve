@@ -81,5 +81,23 @@ public class RestaurantController {
 
         return restaurantService.acceptOrder(latitude,longitude,orderid);
     }
+    
+    //get Menu
+    @GetMapping("/getMenu")
+    public ResponseEntity<ResponceStructure<List<Item>>> getMenu(
+            @RequestParam long mobno){
+
+        return restaurantService.getMenu(mobno);
+    }
+    
+    //upadateItemDetails
+    @PatchMapping("/updateItemDetails")
+    public ResponseEntity<ResponceStructure<Item>> updateItemDetails(
+            @RequestParam long mobno,
+            @RequestParam int itemid,
+            @RequestBody Item item){
+
+        return restaurantService.updateItemDetails(mobno,itemid,item);
+    }
 
 }

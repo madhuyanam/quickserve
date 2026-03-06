@@ -1,9 +1,8 @@
 package com.alpha.quickserve.service;
 
-<<<<<<< HEAD
-=======
+
 import java.io.IOException;
->>>>>>> cb96d0ce67db06da52454ef9e32a38bf7d692983
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,6 +188,7 @@ public class DeliveryPartnerService {
                 ","+custlong+"&travelmode=driving";
         response.sendRedirect(getdir);
     }
+	
     
     
 }
