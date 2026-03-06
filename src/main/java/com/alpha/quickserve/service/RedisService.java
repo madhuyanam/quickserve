@@ -29,7 +29,7 @@ public class RedisService {
         return "Location Updated";
     }
 
-    // 2️⃣ Find Nearby Delivery Partners
+    //Find Nearby Delivery Partners
     public List<String> findNearbyPartners(double latitude,double longitude,double radiusKm){
 
         Circle searchArea =
