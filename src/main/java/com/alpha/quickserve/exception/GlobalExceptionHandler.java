@@ -107,6 +107,57 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(rs,HttpStatus.NOT_FOUND);
     }
+    
+ // Coupon Not Found
+    @ExceptionHandler(CouponNotFoundException.class)
+    public ResponseEntity<ResponceStructure<String>> handleCouponNotFound(CouponNotFoundException ex){
+
+        ResponceStructure<String> rs = new ResponceStructure<>();
+        rs.setStatusCode(HttpStatus.NOT_FOUND.value());
+        rs.setMessage("Coupon Not Found");
+        rs.setData(ex.getMessage());
+
+        return new ResponseEntity<>(rs, HttpStatus.NOT_FOUND);
+    }
+
+    // Coupon Invalid
+    @ExceptionHandler(CouponInvalidException.class)
+    public ResponseEntity<ResponceStructure<String>> handleCouponInvalid(CouponInvalidException ex){
+
+        ResponceStructure<String> rs = new ResponceStructure<>();
+        rs.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        rs.setMessage("Invalid Coupon");
+        rs.setData(ex.getMessage());
+
+        return new ResponseEntity<>(rs, HttpStatus.BAD_REQUEST);
+    }
+
+    // Coupon Expired
+    @ExceptionHandler(CouponExpiredException.class)
+    public ResponseEntity<ResponceStructure<String>> handleCouponExpired(CouponExpiredException ex){
+
+        ResponceStructure<String> rs = new ResponceStructure<>();
+        rs.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        rs.setMessage("Coupon Expired");
+        rs.setData(ex.getMessage());
+
+        return new ResponseEntity<>(rs, HttpStatus.BAD_REQUEST);
+    }
+
+    // Coupon Limit Exceeded
+    @ExceptionHandler(CouponLimitExceededException.class)
+    public ResponseEntity<ResponceStructure<String>> handleCouponLimitExceeded(CouponLimitExceededException ex){
+
+        ResponceStructure<String> rs = new ResponceStructure<>();
+        rs.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        rs.setMessage("Coupon Limit Reached");
+        rs.setData(ex.getMessage());
+
+        return new ResponseEntity<>(rs, HttpStatus.BAD_REQUEST);
+    }
+    
+    
+    
 
     // Generic Exception
     @ExceptionHandler(Exception.class)
