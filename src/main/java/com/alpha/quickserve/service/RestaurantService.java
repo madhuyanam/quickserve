@@ -171,6 +171,59 @@ public class RestaurantService {
 
         return new ResponseEntity<>(rs,HttpStatus.OK);
     }
+    
+    //get menu
+    public ResponseEntity<ResponceStructure<List<Item>>> getMenu(long mobno){
+
+        Restaurant restaurant = restaurantRepo.findByMobno(mobno)
+                .orElseThrow(() ->
+                        new RestaurantNotFoundException("Restaurant not found"));
+
+        List<Item> menu = restaurant.getMenuItems();
+
+        ResponceStructure<List<Item>> rs = new ResponceStructure<>();
+
+        rs.setStatusCode(HttpStatus.OK.value());
+        rs.setMessage("Menu fetched successfully");
+        rs.setData(menu);
+
+        return new ResponseEntity<>(rs,HttpStatus.OK);
+    }
+    
+    //updateItemDetails
+    public ResponseEntity<ResponceStructure<Item>> updateItemDetails(
+            long mobno,
+            int itemid,
+            Item updatedItem){
+
+        Restaurant restaurant = restaurantRepo.findByMobno(mobno)
+                .orElseThrow(() ->
+                        new RestaurantNotFoundException("Restaurant not found"));
+
+        Item item = itemRepo.findById(itemid)
+                .orElseThrow(() ->
+                        new ItemNotFoundException("Item not found"));
+
+        if(!restaurant.getMenuItems().contains(item)){
+            throw new RuntimeException("Item not belongs to this restaurant");
+        }
+
+        item.setName(updatedItem.getName());
+        item.setDescription(updatedItem.getDescription());
+        item.setPrice(updatedItem.getPrice());
+        item.setAvailability(updatedItem.getAvailability());
+        item.setImage(updatedItem.getImage());
+
+        Item savedItem = itemRepo.save(item);
+
+        ResponceStructure<Item> rs = new ResponceStructure<>();
+
+        rs.setStatusCode(HttpStatus.OK.value());
+        rs.setMessage("Item updated successfully");
+        rs.setData(savedItem);
+
+        return new ResponseEntity<>(rs,HttpStatus.OK);
+    }
 
     //remove item from the menu
     public ResponseEntity<ResponceStructure<String>> removeItemFromMenu(

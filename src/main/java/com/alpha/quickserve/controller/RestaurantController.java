@@ -82,13 +82,22 @@ public class RestaurantController {
         return restaurantService.acceptOrder(latitude,longitude,orderid);
     }
     
-    //Remove item from the menu
-    @DeleteMapping("/removeItemFromMenu")
-    public ResponseEntity<ResponceStructure<String>> removeItemFromMenu(
-            @RequestParam long mobno,
-            @RequestParam int itemid){
+    //get Menu
+    @GetMapping("/getMenu")
+    public ResponseEntity<ResponceStructure<List<Item>>> getMenu(
+            @RequestParam long mobno){
 
-        return restaurantService.removeItemFromMenu(mobno,itemid);
+        return restaurantService.getMenu(mobno);
+    }
+    
+    //upadateItemDetails
+    @PatchMapping("/updateItemDetails")
+    public ResponseEntity<ResponceStructure<Item>> updateItemDetails(
+            @RequestParam long mobno,
+            @RequestParam int itemid,
+            @RequestBody Item item){
+
+        return restaurantService.updateItemDetails(mobno,itemid,item);
     }
 
 }
