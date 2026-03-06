@@ -7,10 +7,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.alpha.quickserve.dto.DistanceCalculation;
 import com.alpha.quickserve.dto.OrderNeedConsentDto;
-import com.alpha.quickserve.entity.*;
-import com.alpha.quickserve.exception.*;
-import com.alpha.quickserve.repository.*;
+import com.alpha.quickserve.entity.CartItem;
+import com.alpha.quickserve.entity.Customer;
+import com.alpha.quickserve.entity.Item;
+import com.alpha.quickserve.entity.Order;
+import com.alpha.quickserve.entity.Restaurant;
+import com.alpha.quickserve.exception.CartEmptyException;
+import com.alpha.quickserve.exception.CustomerNotFoundException;
+import com.alpha.quickserve.exception.ItemNotFoundException;
+import com.alpha.quickserve.exception.OrderNotFoundException;
+import com.alpha.quickserve.repository.CustomerRepository;
+import com.alpha.quickserve.repository.ItemRepository;
+import com.alpha.quickserve.repository.OrderRepository;
+import com.alpha.quickserve.repository.RestaurantRepository;
 import com.alpha.quickserve.responcestructure.ResponceStructure;
 
 @Service
@@ -93,13 +104,14 @@ public class CustomerService {
             String specialRequest){
 
         Customer customer = customerRepo.findByMobno(mobno)
-                .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+                .orElseThrow(() ->
+                        new CustomerNotFoundException("Customer not found"));
 
         if(customer.getCart().isEmpty()){
-            throw new RuntimeException("Cart is empty");
+            throw new CartEmptyException("Cart is empty");
         }
 
-        // Get restaurant from first cart item
+        // Restaurant from first cart item
         Restaurant restaurant =
                 customer.getCart().get(0).getItem().getRestaurant();
 
@@ -115,9 +127,20 @@ public class CustomerService {
 
         double tax = itemCost * 0.05;
 
-        double deliveryCharges = 20;
+        // Distance calculation
+        double distance = DistanceCalculation.calculateDistance(
+                restaurant.getAddress().getLatitude(),
+                restaurant.getAddress().getLongitude(),
+                customer.getAddress().getLatitude(),
+                customer.getAddress().getLongitude()
+        );
 
-        double distance = 2.5;
+        // Delivery charge logic
+        double deliveryCharges = 0;
+
+        if(distance > 2){
+            deliveryCharges = (distance - 2) * 10;
+        }
 
         double totalCost =
                 itemCost + packagingFees + platformFees + tax + deliveryCharges;
@@ -151,26 +174,29 @@ public class CustomerService {
         rs.setMessage("Order created - waiting for customer consent");
         rs.setData(dto);
 
-        return new ResponseEntity<>(rs, HttpStatus.CREATED);
+        return new ResponseEntity<>(rs,HttpStatus.CREATED);
     }
 
-    // Confirm Order
+ // Confirm Order
     public ResponseEntity<ResponceStructure<String>> confirmPlacingOrder(int orderid){
 
         Order order = orderRepo.findById(orderid)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found"));
 
+        // Order status change
         order.setStatus("PLACED");
+
         orderRepo.save(order);
 
         ResponceStructure<String> rs = new ResponceStructure<>();
+
         rs.setStatusCode(HttpStatus.OK.value());
-        rs.setMessage("Order Confirmed");
-        rs.setData("Success");
+        rs.setMessage("Order Confirmed Successfully");
+        rs.setData("Order placed successfully");
 
-        return new ResponseEntity<>(rs,HttpStatus.OK);
+        return new ResponseEntity<>(rs, HttpStatus.OK);
     }
-
+    
     // Cancel Order
     public ResponseEntity<ResponceStructure<String>> denyPlacingOrder(int orderid){
 

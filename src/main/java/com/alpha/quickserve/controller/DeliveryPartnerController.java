@@ -1,5 +1,7 @@
 package com.alpha.quickserve.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,8 +10,10 @@ import com.alpha.quickserve.entity.DeliveryPartner;
 import com.alpha.quickserve.responcestructure.ResponceStructure;
 import com.alpha.quickserve.service.DeliveryPartnerService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
-@RequestMapping("/deliverypartner")
+@RequestMapping("/deliveryPartner")
 public class DeliveryPartnerController {
 
 	@Autowired
@@ -51,11 +55,27 @@ public class DeliveryPartnerController {
 	}
 
 	// Accept Order
-	@PostMapping("/acceptorder")
+	@PostMapping("/acceptOrder")
 	public ResponseEntity<ResponceStructure<String>> acceptOrder(
 			@RequestParam Integer orderid,
 			@RequestParam Integer partnerid){
 
 		return deliveryPartnerService.acceptOrder(orderid,partnerid);
 	}
+	
+	// get direction from delivery partner to restaurant
+	 @GetMapping("/getDirectionToRestaurant")
+	    public void getDirectionToRestaurant(@RequestParam Integer partnerId,
+	                                   @RequestParam double restlat, @RequestParam double restlong,
+	                                   HttpServletResponse response) throws IOException {
+	         deliveryPartnerService.getDirectionToRestaurant(partnerId,restlat,restlong,response);
+	    }
+	 
+	 //get direction from restaurant to customer
+	 @GetMapping("/getDirectionToCustomer")
+	    public void getDirectionToCustomer(@RequestParam double restlat,@RequestParam double restlon,@RequestParam double custlat
+	                                   ,@RequestParam double custlong,HttpServletResponse response) throws IOException {
+	         deliveryPartnerService.getDirectionToCustomer(restlat,restlon,custlat,custlong,response);
+	    }
+	
 }
