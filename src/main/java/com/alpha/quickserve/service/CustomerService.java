@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.alpha.quickserve.dto.DistanceCalculation;
 import com.alpha.quickserve.dto.OrderNeedConsentDto;
 import com.alpha.quickserve.entity.*;
 import com.alpha.quickserve.exception.*;
@@ -93,10 +94,11 @@ public class CustomerService {
             String specialRequest){
 
         Customer customer = customerRepo.findByMobno(mobno)
-                .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+                .orElseThrow(() -> 
+                new CustomerNotFoundException("Customer not found"));
 
         if(customer.getCart().isEmpty()){
-            throw new RuntimeException("Cart is empty");
+            throw new CartEmptyException("Cart is empty. Please add items before placing order");
         }
 
         // Get restaurant from first cart item
@@ -115,9 +117,20 @@ public class CustomerService {
 
         double tax = itemCost * 0.05;
 
-        double deliveryCharges = 20;
+     // Calculate distance using coordinates
+        double distance = DistanceCalculation.calculateDistance(
+                restaurant.getAddress().getLatitude(),
+                restaurant.getAddress().getLongitude(),
+                customer.getAddress().getLatitude(),
+                customer.getAddress().getLongitude()
+        );
 
-        double distance = 2.5;
+        // Delivery charge logic
+        double deliveryCharges = 0;
+
+        if(distance > 2){
+            deliveryCharges = (distance - 2) * 10;
+        }
 
         double totalCost =
                 itemCost + packagingFees + platformFees + tax + deliveryCharges;
