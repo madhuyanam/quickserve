@@ -225,4 +225,34 @@ public class RestaurantService {
         return new ResponseEntity<>(rs,HttpStatus.OK);
     }
 
+    //remove item from the menu
+    public ResponseEntity<ResponceStructure<String>> removeItemFromMenu(
+            long mobno,
+            int itemid){
+
+        Restaurant restaurant = restaurantRepo.findByMobno(mobno)
+                .orElseThrow(() ->
+                        new RestaurantNotFoundException("Restaurant not found"));
+
+        Item item = itemRepo.findById(itemid)
+                .orElseThrow(() ->
+                        new ItemNotFoundException("Item not found"));
+
+        if(!restaurant.getMenuItems().contains(item)){
+            throw new RuntimeException("Item not present in this restaurant menu");
+        }
+
+        restaurant.getMenuItems().remove(item);
+
+        restaurantRepo.save(restaurant);
+
+        ResponceStructure<String> rs = new ResponceStructure<>();
+
+        rs.setStatusCode(HttpStatus.OK.value());
+        rs.setMessage("Item removed from menu");
+        rs.setData("Removed successfully");
+
+        return new ResponseEntity<>(rs,HttpStatus.OK);
+    }
+
 }

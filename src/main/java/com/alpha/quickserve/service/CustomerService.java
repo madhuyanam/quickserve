@@ -18,6 +18,7 @@ import com.alpha.quickserve.exception.CartEmptyException;
 import com.alpha.quickserve.exception.CustomerNotFoundException;
 import com.alpha.quickserve.exception.ItemNotFoundException;
 import com.alpha.quickserve.exception.OrderNotFoundException;
+import com.alpha.quickserve.exception.RestaurantNotFoundException;
 import com.alpha.quickserve.repository.CustomerRepository;
 import com.alpha.quickserve.repository.ItemRepository;
 import com.alpha.quickserve.repository.OrderRepository;
@@ -262,6 +263,35 @@ public class CustomerService {
         rs.setStatusCode(HttpStatus.OK.value());
         rs.setMessage("Item Added To Cart");
         rs.setData("Success");
+
+        return new ResponseEntity<>(rs,HttpStatus.OK);
+    }
+    
+    //Remove item from cart
+    public ResponseEntity<ResponceStructure<String>> removeItemFromCart(long customermobno,long restmob,int itemid){
+
+        Customer customer = customerRepo.findByMobno(customermobno).orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+
+        if(customer.getCart() == null || customer.getCart().isEmpty()){
+            throw new CartEmptyException("Cart is empty");
+        }
+
+        Restaurant restaurant = restaurantRepo.findByMobno(restmob)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found"));
+
+        CartItem cartItem = customer.getCart().stream()
+                .filter(ci -> ci.getItem().getId() == itemid
+                && ci.getItem().getRestaurant().getMobno() == restmob)
+                .findFirst()
+                .orElseThrow(() -> new ItemNotFoundException("Item not found in cart"));
+
+        customer.getCart().remove(cartItem);
+        customerRepo.save(customer);
+
+        ResponceStructure<String> rs = new ResponceStructure<>();
+        rs.setStatusCode(HttpStatus.OK.value());
+        rs.setMessage("Item removed from cart successfully");
+        rs.setData("Removed Item ID: " + itemid);
 
         return new ResponseEntity<>(rs,HttpStatus.OK);
     }
