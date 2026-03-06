@@ -86,4 +86,14 @@ public class CustomerController {
 
         return customerService.searchItemOrRestaurant(mobno,searchkey);
     }
+    
+    //Removing item from the cart
+    @DeleteMapping("/removeitemfromcart")
+    public ResponseEntity<ResponceStructure<String>> removeItemFromCart(
+            @RequestParam long customermobno,
+            @RequestParam long restmob,
+            @RequestParam int itemid){
+
+        return customerService.removeItemFromCart(customermobno, restmob, itemid);
+    }
 }
