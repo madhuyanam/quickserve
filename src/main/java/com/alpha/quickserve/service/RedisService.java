@@ -18,7 +18,7 @@ public class RedisService {
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
-    // 1️⃣ Update Delivery Partner Location
+    // Update Delivery Partner Location
 	public String updateDpLoc(Integer partnerid,double latitude,double longitude){
 
         redisTemplate.opsForGeo()
