@@ -81,5 +81,14 @@ public class RestaurantController {
 
         return restaurantService.acceptOrder(latitude,longitude,orderid);
     }
+    
+    //Remove item from the menu
+    @DeleteMapping("/removeItemFromMenu")
+    public ResponseEntity<ResponceStructure<String>> removeItemFromMenu(
+            @RequestParam long mobno,
+            @RequestParam int itemid){
+
+        return restaurantService.removeItemFromMenu(mobno,itemid);
+    }
 
 }
