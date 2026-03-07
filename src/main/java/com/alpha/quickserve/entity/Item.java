@@ -120,7 +120,7 @@ public class Item {
 	}
 
 	public Item(int id, String name, String description, Integer price, Integer unit, String type, String availability,
-			Integer rating, String image, Integer numberOfServices, Restaurant restaurant, List<Customer> customers) {
+			Integer rating, String image, Integer numberOfServices, Restaurant restaurant) {
 		super();
 		this.id = id;
 		this.name = name;

@@ -30,12 +30,12 @@ public class Customer {
 
 	private String gender;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")
 	private Address address;
 
 	@OneToMany(mappedBy = "customer")
-	List<Order> orders;
+	private List<Order> orders;
 
 	@OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")

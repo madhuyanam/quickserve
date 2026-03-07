@@ -87,7 +87,7 @@ public class Order {
 		return cost;
 	}
 
-	public void setCost(int cost) {
+	public void setCost(double  cost) {
 		this.cost = cost;
 	}
 

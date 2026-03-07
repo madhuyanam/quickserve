@@ -1,12 +1,10 @@
 package com.alpha.quickserve.service;
 
 import java.time.LocalDate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.alpha.quickserve.entity.Coupon;
 import com.alpha.quickserve.exception.CouponInvalidException;
 import com.alpha.quickserve.exception.CouponNotFoundException;
@@ -19,9 +17,6 @@ public class PlatformService {
 
     @Autowired
     private CouponRepository couponRepo;
-
-    
- 
 
     @Autowired
     private CouponRedemptionRepository couponRedemptionRepo;
@@ -39,11 +34,6 @@ public class PlatformService {
 
         return new ResponseEntity<>(rs,HttpStatus.CREATED);
     }
-
-    
-
-
-
 
     // DELETE COUPON
     public ResponseEntity<ResponceStructure<String>> deleteCoupon(Integer couponId){
@@ -99,14 +89,7 @@ public class PlatformService {
         return new ResponseEntity<>(rs,HttpStatus.OK);
     }
 
-
-
-    //Finding the Coupon
-
-
-
     // FIND COUPON
-
     public ResponseEntity<ResponceStructure<Coupon>> findCoupon(Integer couponId){
 
         Coupon coupon = couponRepo.findById(couponId)
