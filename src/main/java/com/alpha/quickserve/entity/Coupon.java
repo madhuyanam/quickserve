@@ -16,7 +16,7 @@ public class Coupon {
 
     private String name;          
 
-    private String type;           // PERCENTAGE / FLAT
+    private String type;           
 
     private String status;         // ACTIVE / INACTIVE
 
