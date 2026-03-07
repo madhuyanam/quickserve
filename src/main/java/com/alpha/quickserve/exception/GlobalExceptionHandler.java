@@ -155,11 +155,12 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(rs, HttpStatus.BAD_REQUEST);
     }
+
     
     
     
 
-    // Generic Exception
+ // Generic Exception
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponceStructure<String>> handleGenericException(
             Exception ex){
@@ -172,4 +173,5 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(rs,HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }

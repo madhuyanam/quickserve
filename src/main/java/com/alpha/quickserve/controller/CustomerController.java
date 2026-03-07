@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.alpha.quickserve.dto.CartWithCouponsDto;
 import com.alpha.quickserve.dto.OrderNeedConsentDto;
 import com.alpha.quickserve.entity.CartItem;
 import com.alpha.quickserve.entity.Customer;
@@ -51,7 +52,7 @@ public class CustomerController {
 
     // Get Cart
     @GetMapping("/getcart")
-    public ResponseEntity<ResponceStructure<List<CartItem>>> getCart(@RequestParam long mobno){
+    public ResponseEntity<ResponceStructure<CartWithCouponsDto>> getCart(@RequestParam long mobno){
         return customerService.getCart(mobno);
     }
 
@@ -61,9 +62,10 @@ public class CustomerController {
             @RequestParam long mobno,
             @RequestParam String paymentType,
             @RequestParam String addressType,
-            @RequestParam String specialRequest) {
+            @RequestParam String specialRequest,
+            @RequestParam Integer couponId) {
 
-        return customerService.placingOrder(mobno, paymentType, addressType, specialRequest);
+        return customerService.placeOrder(mobno, paymentType, addressType, specialRequest, couponId);
     }
 
     // Confirm Order
