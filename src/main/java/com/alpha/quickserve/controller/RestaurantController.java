@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.alpha.quickserve.dto.RestaurantDto;
 import com.alpha.quickserve.entity.Item;
 import com.alpha.quickserve.entity.Restaurant;
 import com.alpha.quickserve.responcestructure.ResponceStructure;
@@ -20,8 +21,8 @@ public class RestaurantController {
 
     // Register
     @PostMapping("/register")
-    public ResponseEntity<ResponceStructure<Restaurant>> register(@RequestBody Restaurant restaurant){
-        return restaurantService.register(restaurant);
+    public ResponseEntity<ResponceStructure<Restaurant>> register(@RequestBody RestaurantDto rdto){
+        return restaurantService.register(rdto);
     }
 
     // Find

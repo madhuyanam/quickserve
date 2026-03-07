@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.alpha.quickserve.dto.DelivaryPartnerDto;
 import com.alpha.quickserve.entity.DeliveryPartner;
 import com.alpha.quickserve.responcestructure.ResponceStructure;
 import com.alpha.quickserve.service.DeliveryPartnerService;
@@ -22,9 +23,9 @@ public class DeliveryPartnerController {
 	// Register
 	@PostMapping("/register")
 	public ResponseEntity<ResponceStructure<DeliveryPartner>> register(
-			@RequestBody DeliveryPartner partner){
+			@RequestBody DelivaryPartnerDto ddto){
 
-		return deliveryPartnerService.register(partner);
+		return deliveryPartnerService.register(ddto);
 	}
 
 	// Find
