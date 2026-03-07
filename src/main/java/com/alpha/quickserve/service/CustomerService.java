@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.alpha.quickserve.dto.CartWithCouponsDto;
+import com.alpha.quickserve.dto.CustomerDto;
 import com.alpha.quickserve.dto.DistanceCalculation;
 import com.alpha.quickserve.dto.OrderNeedConsentDto;
 import com.alpha.quickserve.entity.CartItem;
@@ -58,12 +59,20 @@ public class CustomerService {
     @Autowired
     private CouponRedemptionRepository couponRedemptionRepo;
 
-    // Register Customer
-    public ResponseEntity<ResponceStructure<Customer>> register(Customer customer){
+    // Registering  Customer
+    public ResponseEntity<ResponceStructure<Customer>> register(CustomerDto dto){
+
+        Customer customer = new Customer();
+
+        customer.setName(dto.getName());
+        customer.setMobno(dto.getMobno());
+        customer.setMailid(dto.getMailid());
+        customer.setGender(dto.getGender());
 
         Customer savedCustomer = customerRepo.save(customer);
 
         ResponceStructure<Customer> rs = new ResponceStructure<>();
+
         rs.setStatusCode(HttpStatus.CREATED.value());
         rs.setMessage("Customer Registered Successfully");
         rs.setData(savedCustomer);

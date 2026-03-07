@@ -7,10 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.alpha.quickserve.dto.CartWithCouponsDto;
+import com.alpha.quickserve.dto.CustomerDto;
 import com.alpha.quickserve.dto.OrderNeedConsentDto;
-import com.alpha.quickserve.entity.CartItem;
 import com.alpha.quickserve.entity.Customer;
-import com.alpha.quickserve.entity.Order;
 import com.alpha.quickserve.entity.Restaurant;
 import com.alpha.quickserve.responcestructure.ResponceStructure;
 import com.alpha.quickserve.service.CustomerService;
@@ -22,47 +21,51 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    // Register
+    // Registering the customer
     @PostMapping("/register")
-    public ResponseEntity<ResponceStructure<Customer>> register(@RequestBody Customer customer){
-        return customerService.register(customer);
+    public ResponseEntity<ResponceStructure<Customer>> register(@RequestBody CustomerDto cdto){
+
+    	return customerService.register(cdto);
     }
 
-    // Find
+    // Finding the customer by mob no
     @GetMapping("/find")
     public ResponseEntity<ResponceStructure<Customer>> find(@RequestParam long mobno){
+    	
         return customerService.findCustomer(mobno);
     }
 
-    // Delete
+    // Deleting the customer by mob no
     @DeleteMapping("/delete")
     public ResponseEntity<ResponceStructure<String>> delete(@RequestParam long mobno){
+    	
         return customerService.deleteCustomer(mobno);
     }
 
-    // Add To Cart
-    @PostMapping("/addtocart")
+    // Adding item to the cart by mob no,item id,quantity
+    @PostMapping("/addToCart")
     public ResponseEntity<ResponceStructure<String>> addToCart(
-            @RequestParam long mobno,
-            @RequestParam int itemid,
-            @RequestParam int quantity){
+    		@RequestParam long mobno,
+    		@RequestParam int itemid,
+    		@RequestParam int quantity){
 
         return customerService.addToCart(mobno,itemid,quantity);
     }
 
-    // Get Cart
-    @GetMapping("/getcart")
+    // Getting the cart
+    @GetMapping("/getCart")
     public ResponseEntity<ResponceStructure<CartWithCouponsDto>> getCart(@RequestParam long mobno){
+    	
         return customerService.getCart(mobno);
     }
 
-    // Place Order
-    @PostMapping("/placeorder")
+    // Placing the Order
+    @PostMapping("/placeOrder")
     public ResponseEntity<ResponceStructure<OrderNeedConsentDto>> placeOrder(
-            @RequestParam long mobno,
-            @RequestParam String paymentType,
-            @RequestParam String addressType,
-            @RequestParam String specialRequest,
+    		@RequestParam long mobno,
+    		@RequestParam String paymentType,
+    		@RequestParam String addressType,
+    		@RequestParam String specialRequest,
             @RequestParam Integer couponId) {
 
         return customerService.placeOrder(mobno, paymentType, addressType, specialRequest, couponId);
@@ -70,13 +73,13 @@ public class CustomerController {
 
     // Confirm Order
     @PostMapping("/confirmorder")
-    public ResponseEntity<ResponceStructure<String>> confirm(@RequestParam int orderid){
+    public ResponseEntity<ResponceStructure<String>> confirmOrder(@RequestParam int orderid){
         return customerService.confirmPlacingOrder(orderid);
     }
 
     // Cancel Order
     @PostMapping("/cancelorder")
-    public ResponseEntity<ResponceStructure<String>> cancel(@RequestParam int orderid){
+    public ResponseEntity<ResponceStructure<String>> cancelOrder(@RequestParam int orderid){
         return customerService.denyPlacingOrder(orderid);
     }
 

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.alpha.quickserve.dto.DelivaryPartnerDto;
 import com.alpha.quickserve.entity.DeliveryPartner;
 import com.alpha.quickserve.entity.Order;
 
@@ -40,18 +41,28 @@ public class DeliveryPartnerService {
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
 
-	// Register
-	public ResponseEntity<ResponceStructure<DeliveryPartner>> register(DeliveryPartner partner) {
+	public ResponseEntity<ResponceStructure<DeliveryPartner>> register(DelivaryPartnerDto ddto) {
 
-		DeliveryPartner saved = deliveryPartnerRepo.save(partner);
+	    DeliveryPartner dp = new DeliveryPartner();
 
-		ResponceStructure<DeliveryPartner> rs = new ResponceStructure<>();
+	    dp.setName(ddto.getName());
+	    dp.setMob(ddto.getMob());
+	    dp.setMail(ddto.getMail());
+	    dp.setVehicileno(ddto.getVechileno());
 
-		rs.setStatusCode(HttpStatus.CREATED.value());
-		rs.setMessage("Delivery Partner Registered Successfully");
-		rs.setData(saved);
+	    // optional default values
+	    dp.setStatus("AVAILABLE");
+	    dp.setRating(0);
 
-		return new ResponseEntity<>(rs, HttpStatus.CREATED);
+	    DeliveryPartner saved = deliveryPartnerRepo.save(dp);
+
+	    ResponceStructure<DeliveryPartner> rs = new ResponceStructure<>();
+
+	    rs.setStatusCode(HttpStatus.CREATED.value());
+	    rs.setMessage("Delivery Partner Registered Successfully");
+	    rs.setData(saved);
+
+	    return new ResponseEntity<>(rs, HttpStatus.CREATED);
 	}
 
 	// Find
