@@ -15,6 +15,8 @@ import com.alpha.quickserve.responcestructure.ResponceStructure;
 public class PlatformService {
     @Autowired
     private CouponRepository couponRepo;
+    
+    //Creating Coupon
     public ResponseEntity<ResponceStructure<Coupon>> createCoupon(Coupon coupon){
 
         Coupon saved = couponRepo.save(coupon);
@@ -27,6 +29,7 @@ public class PlatformService {
         return new ResponseEntity<>(rs,HttpStatus.CREATED);
     }
     
+    //Deleting Coupon 
     public ResponseEntity<ResponceStructure<String>> deleteCoupon(Integer id){
 
         Coupon coupon = couponRepo.findById(id)
@@ -42,6 +45,8 @@ public class PlatformService {
         return new ResponseEntity<>(rs,HttpStatus.OK);
     }
     
+    
+    //Updating Coupon
     public ResponseEntity<ResponceStructure<Coupon>> updateCoupon(
             Integer id,String expiryDate){
 
@@ -59,6 +64,8 @@ public class PlatformService {
 
         return new ResponseEntity<>(rs,HttpStatus.OK);
     }
+    
+    //Finding the Coupon
     public ResponseEntity<ResponceStructure<Coupon>> findCoupon(Integer couponId){
 
         Coupon coupon = couponRepo.findById(couponId)

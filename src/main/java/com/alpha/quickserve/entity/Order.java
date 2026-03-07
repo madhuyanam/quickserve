@@ -1,4 +1,4 @@
-package com.alpha.quickserve.entity;
+ package com.alpha.quickserve.entity;
 
 import java.util.List;
 import jakarta.persistence.CascadeType;

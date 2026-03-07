@@ -156,8 +156,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(rs, HttpStatus.BAD_REQUEST);
     }
     
-    
-    
 
     // Generic Exception
     @ExceptionHandler(Exception.class)
