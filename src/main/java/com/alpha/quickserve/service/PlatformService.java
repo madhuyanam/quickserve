@@ -19,16 +19,15 @@ public class PlatformService {
 
     @Autowired
     private CouponRepository couponRepo;
-<<<<<<< HEAD
+
     
-    //Creating Coupon
-=======
+ 
 
     @Autowired
     private CouponRedemptionRepository couponRedemptionRepo;
 
     // CREATE COUPON
->>>>>>> 918e3e7547ec73928df7b0c5332fd6e36991a8f2
+
     public ResponseEntity<ResponceStructure<Coupon>> createCoupon(Coupon coupon){
 
         Coupon savedCoupon = couponRepo.save(coupon);
@@ -40,12 +39,10 @@ public class PlatformService {
 
         return new ResponseEntity<>(rs,HttpStatus.CREATED);
     }
-<<<<<<< HEAD
+
     
-    //Deleting Coupon 
-    public ResponseEntity<ResponceStructure<String>> deleteCoupon(Integer id){
-=======
->>>>>>> 918e3e7547ec73928df7b0c5332fd6e36991a8f2
+
+
 
 
     // DELETE COUPON
@@ -68,15 +65,10 @@ public class PlatformService {
 
         return new ResponseEntity<>(rs,HttpStatus.OK);
     }
-<<<<<<< HEAD
-    
-    
-    //Updating Coupon
-=======
 
 
     // UPDATE COUPON
->>>>>>> 918e3e7547ec73928df7b0c5332fd6e36991a8f2
+
     public ResponseEntity<ResponceStructure<Coupon>> updateCoupon(
             Integer couponId,
             String expiryDate){
@@ -106,14 +98,15 @@ public class PlatformService {
 
         return new ResponseEntity<>(rs,HttpStatus.OK);
     }
-<<<<<<< HEAD
-    
+
+
+
     //Finding the Coupon
-=======
+
 
 
     // FIND COUPON
->>>>>>> 918e3e7547ec73928df7b0c5332fd6e36991a8f2
+
     public ResponseEntity<ResponceStructure<Coupon>> findCoupon(Integer couponId){
 
         Coupon coupon = couponRepo.findById(couponId)
