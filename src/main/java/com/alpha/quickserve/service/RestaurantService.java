@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.alpha.quickserve.dto.RestaurantDto;
+import com.alpha.quickserve.entity.Address;
 import com.alpha.quickserve.entity.Item;
 import com.alpha.quickserve.entity.Order;
 import com.alpha.quickserve.entity.Restaurant;
@@ -38,8 +40,26 @@ public class RestaurantService {
     private RedisTemplate<String,String> redisTemplate;
 
     // Register Restaurant
-    public ResponseEntity<ResponceStructure<Restaurant>> register(Restaurant restaurant){
+    public ResponseEntity<ResponceStructure<Restaurant>> register(RestaurantDto rdto){
 
+        Restaurant restaurant = new Restaurant();
+
+        restaurant.setName(rdto.getName());
+        restaurant.setMail(rdto.getMail());
+        restaurant.setMobno(rdto.getMobno());
+        restaurant.setStatus("Closed");
+        restaurant.setDescription(rdto.getDescription());
+        restaurant.setPackagingFee(rdto.getPackagingFee());
+        restaurant.setType(rdto.getType());
+        
+     // Convert coordinates → Address
+        Address address = new Address();
+
+        address.setLatitude(rdto.getCoordinates().getLatitude());
+        address.setLongitude(rdto.getCoordinates().getLongitude());
+
+        restaurant.setAddress(address);
+        
         Restaurant savedRestaurant = restaurantRepo.save(restaurant);
 
         ResponceStructure<Restaurant> rs = new ResponceStructure<>();
@@ -49,7 +69,6 @@ public class RestaurantService {
 
         return new ResponseEntity<>(rs,HttpStatus.CREATED);
     }
-
     // Find Restaurant
     public ResponseEntity<ResponceStructure<Restaurant>> findRestaurant(long mobno){
 
