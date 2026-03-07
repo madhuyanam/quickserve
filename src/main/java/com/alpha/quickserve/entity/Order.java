@@ -21,7 +21,7 @@ public class Order {
 	private int id;
 	
 	private String status;
-	private int cost;
+	private double cost;
 	private int otp;
 
 	@ManyToOne
@@ -45,8 +45,6 @@ public class Order {
 	
 	private String estimatedTime;
 	private int distance;
-	private int discount;
-	private String coupons;
 	private String specialRequest;
 	private String deliveryInstructions;
 	private String date;
@@ -58,8 +56,16 @@ public class Order {
 			inverseJoinColumns = @JoinColumn(name = "item_id")
 			)
 	private List<Item> items;
-
-
+	
+	
+	//added after coupon logic implementation
+	private double originalAmount;
+	private double discountAmount;
+	private double finalAmount;
+	
+	@ManyToOne
+	@JoinColumn(name = "coupon_id")
+	private Coupon coupon;
 
 	public int getId() {
 		return id;
@@ -68,18 +74,23 @@ public class Order {
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getStatus() {
 		return status;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public int getCost() {
+
+	public double getCost() {
 		return cost;
 	}
+
 	public void setCost(int cost) {
 		this.cost = cost;
 	}
+
 	public int getOtp() {
 		return otp;
 	}
@@ -88,188 +99,175 @@ public class Order {
 		this.otp = otp;
 	}
 
-
 	public DeliveryPartner getDeliveryPartner() {
 		return deliveryPartner;
 	}
 
-
-	public void setDeliveryPartner(DeliveryPartner delivaryPartner) {
-		this.deliveryPartner = delivaryPartner;
+	public void setDeliveryPartner(DeliveryPartner deliveryPartner) {
+		this.deliveryPartner = deliveryPartner;
 	}
-
 
 	public String getPickupaddress() {
 		return pickupaddress;
 	}
 
-
 	public void setPickupaddress(String pickupaddress) {
 		this.pickupaddress = pickupaddress;
 	}
 
-
-	public String getDelivaryAddress() {
+	public String getDeliveryAddress() {
 		return deliveryAddress;
 	}
 
-
-	public void setDelivaryAddress(String delivaryAddress) {
-		this.deliveryAddress = delivaryAddress;
+	public void setDeliveryAddress(String deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
 	}
-
-
-	public Restaurant getRestaurant() {
-		return restaurant;
-	}
-
-
-	public void setRestaurant(Restaurant restaurant) {
-		this.restaurant = restaurant;
-	}
-
 
 	public Customer getCustomer() {
 		return customer;
 	}
 
-
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
 
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
 
 	public Payment getPayment() {
 		return payment;
 	}
 
-
 	public void setPayment(Payment payment) {
 		this.payment = payment;
 	}
-
 
 	public String getEstimatedTime() {
 		return estimatedTime;
 	}
 
-
 	public void setEstimatedTime(String estimatedTime) {
 		this.estimatedTime = estimatedTime;
 	}
-
 
 	public int getDistance() {
 		return distance;
 	}
 
-
 	public void setDistance(int distance) {
 		this.distance = distance;
 	}
-
-
-	public int getDiscount() {
-		return discount;
-	}
-
-
-	public void setDiscount(int discount) {
-		this.discount = discount;
-	}
-
-
-	public String getCoupones() {
-		return coupons;
-	}
-
-
-	public void setCoupones(String coupones) {
-		this.coupons = coupones;
-	}
-
 
 	public String getSpecialRequest() {
 		return specialRequest;
 	}
 
-
 	public void setSpecialRequest(String specialRequest) {
 		this.specialRequest = specialRequest;
 	}
 
-
-	public String getDelivaryInstructions() {
+	public String getDeliveryInstructions() {
 		return deliveryInstructions;
 	}
 
-
-	public void setDelivaryInstructions(String delivaryInstructions) {
-		this.deliveryInstructions = delivaryInstructions;
+	public void setDeliveryInstructions(String deliveryInstructions) {
+		this.deliveryInstructions = deliveryInstructions;
 	}
-
 
 	public String getDate() {
 		return date;
 	}
 
-
 	public void setDate(String date) {
 		this.date = date;
 	}
 
-
-	public List<Item> getItem() {
+	public List<Item> getItems() {
 		return items;
 	}
 
-
-	public void setItem(List<Item> item) {
-		this.items = item;
+	public void setItems(List<Item> items) {
+		this.items = items;
 	}
 
+	public double getOriginalAmount() {
+		return originalAmount;
+	}
 
-	public Order(int id, String status, int cost, int otp, DeliveryPartner delivaryPartner, String pickupaddress,
-			String delivaryAddress, Restaurant restaurant, Customer customer, Payment payment, String estimatedTime,
-			int distance, int discount, String coupones, String specialRequest, String delivaryInstructions,
-			String date, List<Item> item) {
+	public void setOriginalAmount(double originalAmount) {
+		this.originalAmount = originalAmount;
+	}
+
+	public double getDiscountAmount() {
+		return discountAmount;
+	}
+
+	public void setDiscountAmount(double discountAmount) {
+		this.discountAmount = discountAmount;
+	}
+
+	public double getFinalAmount() {
+		return finalAmount;
+	}
+
+	public void setFinalAmount(double finalAmount) {
+		this.finalAmount = finalAmount;
+	}
+
+	public Coupon getCoupon() {
+		return coupon;
+	}
+
+	public void setCoupon(Coupon coupon) {
+		this.coupon = coupon;
+	}
+
+	public Order(int id, String status, double cost, int otp, DeliveryPartner deliveryPartner, String pickupaddress,
+			String deliveryAddress, Customer customer, Restaurant restaurant, Payment payment, String estimatedTime,
+			int distance, String specialRequest, String deliveryInstructions, String date,
+			List<Item> items, double originalAmount, double discountAmount, double finalAmount, Coupon coupon) {
 		super();
 		this.id = id;
 		this.status = status;
 		this.cost = cost;
 		this.otp = otp;
-		this.deliveryPartner = delivaryPartner;
+		this.deliveryPartner = deliveryPartner;
 		this.pickupaddress = pickupaddress;
-		this.deliveryAddress = delivaryAddress;
-		this.restaurant = restaurant;
+		this.deliveryAddress = deliveryAddress;
 		this.customer = customer;
+		this.restaurant = restaurant;
 		this.payment = payment;
 		this.estimatedTime = estimatedTime;
 		this.distance = distance;
-		this.coupons = coupones;
 		this.specialRequest = specialRequest;
-		this.deliveryInstructions = delivaryInstructions;
+		this.deliveryInstructions = deliveryInstructions;
 		this.date = date;
-		this.items = item;
+		this.items = items;
+		this.originalAmount = originalAmount;
+		this.discountAmount = discountAmount;
+		this.finalAmount = finalAmount;
+		this.coupon = coupon;
 	}
-
 
 	public Order() {
 		super();
 	}
 
-
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ", status=" + status + ", cost=" + cost + ", otp=" + otp + ", delivaryPartner="
-				+ deliveryPartner + ", pickupaddress=" + pickupaddress + ", delivaryAddress=" + deliveryAddress
-				+ ", restaurant=" + restaurant + ", customer=" + customer + ", payment=" + payment + ", estimatedTime="
-				+ estimatedTime + ", distance=" + distance + ", discount=" + discount + ", coupones=" + coupons
-				+ ", specialRequest=" + specialRequest + ", delivaryInstructions=" + deliveryInstructions + ", date="
-				+ date + ", item=" + items + "]";
+		return "Order [id=" + id + ", status=" + status + ", cost=" + cost + ", otp=" + otp + ", deliveryPartner="
+				+ deliveryPartner + ", pickupaddress=" + pickupaddress + ", deliveryAddress=" + deliveryAddress
+				+ ", customer=" + customer + ", restaurant=" + restaurant + ", payment=" + payment + ", estimatedTime="
+				+ estimatedTime + ", distance=" + distance + ",specialRequest=" + specialRequest + ", deliveryInstructions=" + deliveryInstructions + ", date="
+				+ date + ", items=" + items + ", originalAmount=" + originalAmount + ", discountAmount="
+				+ discountAmount + ", finalAmount=" + finalAmount + ", coupon=" + coupon + "]";
 	}
-
-
-
+	
+	
 
 }

@@ -14,4 +14,7 @@ public interface CouponRedemptionRepository extends JpaRepository<CouponRedempti
 
 	Optional<CouponRedemption>findByCouponAndCustomer(Coupon coupon,Customer customer);
 
+	boolean existsByCoupon(Coupon coupon);
+	
+
 }
