@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.alpha.quickserve.dto.DelivaryPartnerDto;
 import com.alpha.quickserve.entity.DeliveryPartner;
 import com.alpha.quickserve.entity.Order;
+import com.alpha.quickserve.entity.Restaurant;
 import com.alpha.quickserve.exception.DeliveryPartnerLocationNotFoundException;
 import com.alpha.quickserve.exception.DeliveryPartnerNotFoundException;
 import com.alpha.quickserve.exception.InvalidOrderStateException;
@@ -21,6 +22,7 @@ import com.alpha.quickserve.exception.InvalidOtpException;
 import com.alpha.quickserve.exception.OrderNotFoundException;
 import com.alpha.quickserve.repository.DelivaryPartnerRepository;
 import com.alpha.quickserve.repository.OrderRepository;
+import com.alpha.quickserve.repository.RestaurantRepository;
 import com.alpha.quickserve.responcestructure.ResponceStructure;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -38,6 +40,8 @@ public class DeliveryPartnerService {
 
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
+	@Autowired
+	private RestaurantRepository restaurantRepo;
 
 	public ResponseEntity<ResponceStructure<DeliveryPartner>> register(DelivaryPartnerDto ddto) {
 
@@ -124,10 +128,13 @@ public class DeliveryPartnerService {
 	            .orElseThrow(() -> new DeliveryPartnerNotFoundException("Partner not found"));
 
 	    order.setDeliveryPartner(partner);
+	    partner.setCurrentOrder(order);
+	   
 
 	    order.setStatus("ORDER_PREPARING");
 
 	    orderRepo.save(order);
+	    deliveryPartnerRepo.save(partner);
 
 	    ResponceStructure<String> rs = new ResponceStructure<>();
 
@@ -177,7 +184,7 @@ public class DeliveryPartnerService {
 		response.sendRedirect(getdir);
 	}
 
-
+//pickup order
 	public ResponseEntity<ResponceStructure<String>> pickupOrder(int orderid){
 
 		Order order = orderRepo.findById(orderid)
@@ -201,31 +208,101 @@ public class DeliveryPartnerService {
 	}
 
 
-	public ResponseEntity<ResponceStructure<String>> deliverOrder(int orderid,int otp){
+//	public ResponseEntity<ResponceStructure<String>> deliverOrder(int orderid,int otp){
+//
+//		Order order = orderRepo.findById(orderid)
+//				.orElseThrow(() -> new OrderNotFoundException("Order not found"));
+//
+//		if(order.getOtp()!=otp){
+//			throw new InvalidOtpException("Invalid OTP");
+//		}
+//
+//		if(!order.getStatus().equals("ORDER_ON_THE_WAY")){
+//			throw new InvalidOrderStateException("Order cannot be delivered now");
+//		}
+//
+//		order.setStatus("ORDER_DELIVERED");
+//
+//		orderRepo.save(order);
+//
+//		ResponceStructure<String> rs = new ResponceStructure<>();
+//
+//		rs.setStatusCode(200);
+//		rs.setMessage("Order Delivered Successfully");
+//		rs.setData("ORDER_DELIVERED");
+//
+//		return ResponseEntity.ok(rs);
+//	}
+	
+	//Successful deliavry
+	public ResponseEntity<ResponceStructure<String>> successfulDelivery(
+	        long deliverypartnermob,
+	        int otp){
 
-		Order order = orderRepo.findById(orderid)
-				.orElseThrow(() -> new OrderNotFoundException("Order not found"));
+	    DeliveryPartner dp = deliveryPartnerRepo.findByMob(deliverypartnermob)
+	            .orElseThrow(() ->
+	                    new DeliveryPartnerNotFoundException("Delivery partner not found"));
 
-		if(order.getOtp()!=otp){
-			throw new InvalidOtpException("Invalid OTP");
-		}
+	    Order order = dp.getCurrentOrder();
 
-		if(!order.getStatus().equals("ORDER_ON_THE_WAY")){
-			throw new InvalidOrderStateException("Order cannot be delivered now");
-		}
+	    if(order == null){
+	        throw new OrderNotFoundException("No active order for delivery partner");
+	    }
 
-		order.setStatus("ORDER_DELIVERED");
+	    if(!order.getStatus().equals("ORDER_ON_THE_WAY")){
+	        throw new InvalidOrderStateException("Order cannot be delivered now");
+	    }
 
-		orderRepo.save(order);
+	    if(order.getOtp() != otp){
+	        throw new InvalidOtpException("Invalid OTP");
+	    }
 
-		ResponceStructure<String> rs = new ResponceStructure<>();
+	    // Delivery successful
+	    order.setStatus("ORDER_DELIVERED");
 
-		rs.setStatusCode(200);
-		rs.setMessage("Order Delivered Successfully");
-		rs.setData("ORDER_DELIVERED");
+	    distributePayment(order);
 
-		return ResponseEntity.ok(rs);
+	    // clear delivery partner current order
+	    dp.setCurrentOrder(null);
+	    dp.setStatus("AVAILABLE");
+
+	    orderRepo.save(order);
+	    deliveryPartnerRepo.save(dp);
+
+	    ResponceStructure<String> rs = new ResponceStructure<>();
+
+	    rs.setStatusCode(HttpStatus.OK.value());
+	    rs.setMessage("Delivery completed successfully");
+	    rs.setData("ORDER_DELIVERED");
+
+	    return new ResponseEntity<>(rs,HttpStatus.OK);
 	}
 
+	    // Payment Distribution
+	private void distributePayment(Order order){
 
+	    double totalAmount = order.getFinalAmount();
+
+	    double deliveryCharges = order.getDeliveryCharges();
+
+	    double amount = totalAmount - deliveryCharges;
+
+	    double platformShare = amount * 0.05;
+	    double restaurantShare = amount * 0.85;
+	    double dpShare = (amount * 0.10) + deliveryCharges;
+
+	    Restaurant restaurant = order.getRestaurant();
+	    DeliveryPartner dp = order.getDeliveryPartner();
+
+	    restaurant.setWallet(
+	            restaurant.getWallet() + restaurantShare
+	    );
+
+	    dp.setWallet(
+	            dp.getWallet() + dpShare
+	    );
+
+	    restaurantRepo.save(restaurant);
+	    deliveryPartnerRepo.save(dp);
+	}
 }

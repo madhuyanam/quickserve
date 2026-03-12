@@ -38,71 +38,101 @@ public class DeliveryPartner {
 	@OneToMany(mappedBy = "deliveryPartner")
 	private List <Order> order;
 
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
+	private double wallet;
+	
+	 @OneToOne
+	 private Order currentOrder;
 
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+	 public int getId() {
+		 return id;
+	 }
 
-	public long getMob() {
-		return mob;
-	}
-	public void setMob(long mob) {
-		this.mob = mob;
-	}
+	 public void setId(int id) {
+		 this.id = id;
+	 }
 
-	public String getMail() {
-		return mail;
-	}
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
+	 public String getName() {
+		 return name;
+	 }
 
-	public double getRating() {
-		return rating;
-	}
-	public void setRating(double rating) {
-		this.rating = rating;
-	}
+	 public void setName(String name) {
+		 this.name = name;
+	 }
 
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
+	 public long getMob() {
+		 return mob;
+	 }
 
-	public String getVehicileno() {
-		return vehicileno;
-	}
-	public void setVehicileno(String vehicileno) {
-		this.vehicileno = vehicileno;
-	}
+	 public void setMob(long mob) {
+		 this.mob = mob;
+	 }
 
-	public Address getAddress() {
-		return address;
-	}
-	public void setAddress(Address address) {
-		this.address = address;
-	}
+	 public String getMail() {
+		 return mail;
+	 }
 
-	public List<Order> getOrder() {
-		return order;
-	}
-	public void setOrder(List<Order> order) {
-		this.order = order;
-	}
+	 public void setMail(String mail) {
+		 this.mail = mail;
+	 }
 
-	public DeliveryPartner(int id, String name, long mob, String mail, double rating, String status, String vehicileno,
-			Address address, List<Order> order) {
+	 public double getRating() {
+		 return rating;
+	 }
+
+	 public void setRating(double rating) {
+		 this.rating = rating;
+	 }
+
+	 public String getStatus() {
+		 return status;
+	 }
+
+	 public void setStatus(String status) {
+		 this.status = status;
+	 }
+
+	 public String getVehicileno() {
+		 return vehicileno;
+	 }
+
+	 public void setVehicileno(String vehicileno) {
+		 this.vehicileno = vehicileno;
+	 }
+
+	 public Address getAddress() {
+		 return address;
+	 }
+
+	 public void setAddress(Address address) {
+		 this.address = address;
+	 }
+
+	 public List<Order> getOrder() {
+		 return order;
+	 }
+
+	 public void setOrder(List<Order> order) {
+		 this.order = order;
+	 }
+
+	 public double getWallet() {
+		 return wallet;
+	 }
+
+	 public void setWallet(double wallet) {
+		 this.wallet = wallet;
+	 }
+
+	 public Order getCurrentOrder() {
+		 return currentOrder;
+	 }
+
+	 public void setCurrentOrder(Order currentOrder) {
+		 currentOrder = currentOrder;
+	 }
+
+	 public DeliveryPartner(int id, String name, long mob, String mail, double rating, String status, String vehicileno,
+			Address address, List<Order> order, double wallet, Order currentOrder) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -113,17 +143,20 @@ public class DeliveryPartner {
 		this.vehicileno = vehicileno;
 		this.address = address;
 		this.order = order;
-	}
+		this.wallet = wallet;
+		currentOrder = currentOrder;
+	 }
 
-	public DeliveryPartner() {
+	 public DeliveryPartner() {
 		super();
-	}
+	 }
 
-	@Override
-	public String toString() {
-		return "DelivaryPartner [id=" + id + ", name=" + name + ", mob=" + mob + ", mail=" + mail + ", rating=" + rating
+	 @Override
+	 public String toString() {
+		return "DeliveryPartner [id=" + id + ", name=" + name + ", mob=" + mob + ", mail=" + mail + ", rating=" + rating
 				+ ", status=" + status + ", vehicileno=" + vehicileno + ", address=" + address + ", order=" + order
-				+ "]";
-	}
+				+ ", wallet=" + wallet + ", CurrentOrder=" + currentOrder + "]";
+	 }
+	 
 
-}
+	}

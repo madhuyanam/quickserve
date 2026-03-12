@@ -106,4 +106,13 @@ public class CustomerController {
 
         return customerService.removeItemFromCart(customermobno, restmob, itemid);
     }
+    
+    //confirm paying orderbyonline
+    @PostMapping("/confirmorderByonline")
+    public ResponseEntity<ResponceStructure<String>> confirmPayingOrderByOnline(
+            @RequestParam long customermobno,
+            @RequestParam int orderid){
+
+        return customerService.confirmOrderByOnline(customermobno,orderid);
+    }
 }

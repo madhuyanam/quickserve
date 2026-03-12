@@ -49,6 +49,7 @@ public class Order {
 	private String specialRequest;
 	private String deliveryInstructions;
 	private String date;
+	private double deliveryCharges;
 
 	@ManyToMany
 	@JoinTable(
@@ -98,6 +99,42 @@ public class Order {
 
 	public void setOtp(int otp) {
 		this.otp = otp;
+	}
+
+	public Order(int id, String status, double cost, int otp, DeliveryPartner deliveryPartner, String pickupaddress,
+			String deliveryAddress, Customer customer, Restaurant restaurant, Payment payment, String estimatedTime,
+			int distance, String specialRequest, String deliveryInstructions, String date, double deliveryCharges,
+			List<Item> items, double originalAmount, double discountAmount, double finalAmount, Coupon coupon) {
+		super();
+		this.id = id;
+		this.status = status;
+		this.cost = cost;
+		this.otp = otp;
+		this.deliveryPartner = deliveryPartner;
+		this.pickupaddress = pickupaddress;
+		this.deliveryAddress = deliveryAddress;
+		this.customer = customer;
+		this.restaurant = restaurant;
+		this.payment = payment;
+		this.estimatedTime = estimatedTime;
+		this.distance = distance;
+		this.specialRequest = specialRequest;
+		this.deliveryInstructions = deliveryInstructions;
+		this.date = date;
+		this.deliveryCharges = deliveryCharges;
+		this.items = items;
+		this.originalAmount = originalAmount;
+		this.discountAmount = discountAmount;
+		this.finalAmount = finalAmount;
+		this.coupon = coupon;
+	}
+
+	public double getDeliveryCharges() {
+		return deliveryCharges;
+	}
+
+	public void setDeliveryCharges(double deliveryCharges) {
+		this.deliveryCharges = deliveryCharges;
 	}
 
 	public DeliveryPartner getDeliveryPartner() {

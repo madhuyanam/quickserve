@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.alpha.quickserve.config.RazorpayConfig;
 import com.alpha.quickserve.dto.CartWithCouponsDto;
 import com.alpha.quickserve.dto.CustomerDto;
 import com.alpha.quickserve.dto.DistanceCalculation;
@@ -18,10 +20,13 @@ import com.alpha.quickserve.entity.CartItem;
 import com.alpha.quickserve.entity.Coupon;
 import com.alpha.quickserve.entity.CouponRedemption;
 import com.alpha.quickserve.entity.Customer;
+import com.alpha.quickserve.entity.DeliveryPartner;
 import com.alpha.quickserve.entity.Item;
 import com.alpha.quickserve.entity.Order;
+import com.alpha.quickserve.entity.Payment;
 import com.alpha.quickserve.entity.Restaurant;
 import com.alpha.quickserve.exception.CartEmptyException;
+import com.alpha.quickserve.exception.CodNotAllowedException;
 import com.alpha.quickserve.exception.CouponExpiredException;
 import com.alpha.quickserve.exception.CouponInvalidException;
 import com.alpha.quickserve.exception.CouponLimitExceededException;
@@ -30,6 +35,8 @@ import com.alpha.quickserve.exception.CustomerNotFoundException;
 import com.alpha.quickserve.exception.InvalidOrderStateException;
 import com.alpha.quickserve.exception.ItemNotFoundException;
 import com.alpha.quickserve.exception.OrderNotFoundException;
+import com.alpha.quickserve.exception.PaymentFailedException;
+import com.alpha.quickserve.exception.PaymentProcessingException;
 import com.alpha.quickserve.exception.RestaurantNotFoundException;
 import com.alpha.quickserve.repository.CouponRedemptionRepository;
 import com.alpha.quickserve.repository.CouponRepository;
@@ -38,6 +45,7 @@ import com.alpha.quickserve.repository.ItemRepository;
 import com.alpha.quickserve.repository.OrderRepository;
 import com.alpha.quickserve.repository.RestaurantRepository;
 import com.alpha.quickserve.responcestructure.ResponceStructure;
+import com.razorpay.RazorpayClient;
 
 @Service
 public class CustomerService {
@@ -60,6 +68,9 @@ public class CustomerService {
     @Autowired
     private CouponRedemptionRepository couponRedemptionRepo;
 
+    @Autowired
+    private RazorpayService razorpayService;
+    
     // Registering  Customer
     public ResponseEntity<ResponceStructure<Customer>> register(CustomerDto dto){
 
@@ -177,23 +188,32 @@ public class CustomerService {
             throw new CartEmptyException("Cart is empty");
         }
 
-        // restaurant from first cart item
+        // COD restriction
+        if(paymentType.equalsIgnoreCase("COD")
+                && customer.getPenalty() > 0){
+
+            throw new CodNotAllowedException(
+                    "COD not allowed until penalty cleared");
+        }
+
         Restaurant restaurant =
                 customer.getCart().get(0).getItem().getRestaurant();
 
         double itemCost = 0;
 
+        List<Item> items = new ArrayList<>();
+
         for(CartItem ci : customer.getCart()){
+
             itemCost += ci.getItem().getPrice() * ci.getQuantity();
+
+            items.add(ci.getItem());
         }
 
         double packagingFees = restaurant.getPackagingFee();
-
         double platformFees = 5;
-
         double tax = itemCost * 0.05;
 
-        // distance calculation
         double distance = DistanceCalculation.calculateDistance(
                 restaurant.getAddress().getLatitude(),
                 restaurant.getAddress().getLongitude(),
@@ -204,137 +224,58 @@ public class CustomerService {
         double deliveryCharges = 0;
 
         if(distance > 2){
-            deliveryCharges = (distance - 2) * 10;
+            deliveryCharges = (distance-2)*10;
         }
 
         double totalCost =
                 itemCost + packagingFees + platformFees + tax + deliveryCharges;
 
-        double discount = 0;
-
-        Coupon coupon = null;
-
-        // COUPON LOGIC
-        if(couponId != null){
-
-            coupon = couponRepo.findById(couponId)
-                    .orElseThrow(() ->
-                            new CouponNotFoundException("Coupon not found"));
-
-            if(LocalDate.now().isAfter(coupon.getExpiryDate())){
-                throw new CouponExpiredException("Coupon expired");
-            }
-
-            if(totalCost < coupon.getMinOrderPrice()){
-                throw new CouponInvalidException("Minimum order price not satisfied");
-            }
-
-            if(coupon.getMaxCoupons() <= 0){
-                throw new CouponLimitExceededException("Coupon limit reached");
-            }
-
-            Optional<CouponRedemption> redemption =
-                    couponRedemptionRepo.findByCouponAndCustomer(coupon,customer);
-
-            if(redemption.isPresent()){
-                throw new CouponInvalidException("Coupon already used");
-            }
-
-            discount = totalCost * coupon.getOffer() / 100;
-
-            if(discount > coupon.getMaxRedeemPrice()){
-                discount = coupon.getMaxRedeemPrice();
-            }
-
-            totalCost = totalCost - discount;
-        }
-
-        // CREATE ORDER
         Order order = new Order();
 
         order.setCustomer(customer);
-
         order.setRestaurant(restaurant);
 
-        // pickup address (restaurant)
+        order.setItems(items);
+
         order.setPickupaddress(
-                restaurant.getAddress().getStreet() + ", " +
-                restaurant.getAddress().getCity()
-        );
+                restaurant.getAddress().getStreet());
 
-        // delivery address (customer)
         order.setDeliveryAddress(
-                customer.getAddress().getStreet() + ", " +
-                customer.getAddress().getCity()
-        );
-
-        order.setSpecialRequest(specialRequest);
+                customer.getAddress().getStreet());
 
         order.setStatus("WAITING_FOR_CONSENT");
 
         order.setOriginalAmount(itemCost);
 
-        order.setDiscountAmount(discount);
-
         order.setFinalAmount(totalCost);
-
-        order.setCoupon(coupon);
 
         order.setCost(totalCost);
 
+        order.setSpecialRequest(specialRequest);
+
         Order savedOrder = orderRepo.save(order);
 
-        // update coupon usage
-        if(coupon != null){
-
-            coupon.setMaxCoupons(coupon.getMaxCoupons() - 1);
-
-            couponRepo.save(coupon);
-
-            CouponRedemption cr = new CouponRedemption();
-
-            cr.setCoupon(coupon);
-
-            cr.setCustomer(customer);
-
-            cr.setOrder(savedOrder);
-
-            couponRedemptionRepo.save(cr);
-        }
-
-        // RESPONSE DTO
         OrderNeedConsentDto dto = new OrderNeedConsentDto();
 
         dto.setOrderId(savedOrder.getId());
-
         dto.setRestaurantName(restaurant.getName());
-
         dto.setItemCost(itemCost);
-
         dto.setPackagingFees(packagingFees);
-
         dto.setPlatformFees(platformFees);
-
         dto.setTax(tax);
-
         dto.setDeliveryCharges(deliveryCharges);
-
         dto.setDistance(distance);
-
         dto.setTotalCost(totalCost);
 
         ResponceStructure<OrderNeedConsentDto> rs =
                 new ResponceStructure<>();
 
-        rs.setStatusCode(HttpStatus.CREATED.value());
-
-        rs.setMessage("Order created - waiting for customer consent");
-
+        rs.setStatusCode(201);
+        rs.setMessage("Order initiated. Waiting for consent");
         rs.setData(dto);
 
         return new ResponseEntity<>(rs,HttpStatus.CREATED);
     }
-
  // Confirm Order
     public ResponseEntity<ResponceStructure<String>> confirmOrderByCOD(int orderid){
 
@@ -364,32 +305,151 @@ public class CustomerService {
         return new ResponseEntity<>(rs,HttpStatus.OK);
     }
     
-    // Cancel Order
-    public ResponseEntity<ResponceStructure<String>> cancelOrder(long mobno,int orderid){
+    //Confirm order By Online 
+    public ResponseEntity<ResponceStructure<String>> confirmOrderByOnline(
+            long mobno,
+            int orderid){
 
         Customer customer = customerRepo.findByMobno(mobno)
-                .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+                .orElseThrow(() ->
+                        new CustomerNotFoundException("Customer not found"));
 
         Order order = orderRepo.findById(orderid)
-                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
+                .orElseThrow(() ->
+                        new OrderNotFoundException("Order not found"));
 
-        if(order.getDeliveryPartner()==null){
+        if(!order.getStatus().equals("WAITING_FOR_CONSENT")){
+            throw new InvalidOrderStateException("Order cannot be confirmed now");
+        }
+
+        double finalAmount = order.getFinalAmount();
+
+        // add penalty
+        if(customer.getPenalty() > 0){
+            finalAmount = finalAmount + customer.getPenalty();
+        }
+
+        boolean paymentSuccess = razorpayService.makePayment(finalAmount);
+
+        if(!paymentSuccess){
 
             order.setStatus("CANCELLED");
 
-            if(order.getPayment()!=null &&
-               order.getPayment().getType().equalsIgnoreCase("ONLINE")){
+            // restore cart
+            for(Item item : order.getItems()){
 
-                customer.setWallet(customer.getWallet()+order.getFinalAmount());
+                CartItem cartItem = new CartItem();
+                cartItem.setItem(item);
+                cartItem.setQuantity(1);
+
+                customer.getCart().add(cartItem);
             }
 
-        }
-        else{
+            orderRepo.save(order);
+            customerRepo.save(customer);
 
-            customer.setPenalty(customer.getPenalty()+order.getFinalAmount());
-
-            order.setStatus("CANCELLED");
+            throw new PaymentFailedException("Payment failed. Order cancelled.");
         }
+
+        // payment success
+
+        Payment payment = new Payment();
+
+        payment.setAmount(finalAmount);
+        payment.setType("ONLINE");
+        payment.setStatus("PAID");
+
+        order.setPayment(payment);
+
+        order.setStatus("ORDER_CONFIRMED_BY_CUSTOMER");
+
+        // clear penalty after payment
+        customer.setPenalty(0);
+
+        orderRepo.save(order);
+     
+        customerRepo.save(customer);
+
+        ResponceStructure<String> rs = new ResponceStructure<>();
+
+        rs.setStatusCode(200);
+        rs.setMessage("Payment Successful. Order Confirmed");
+        rs.setData("ORDER_CONFIRMED_BY_CUSTOMER");
+
+        return ResponseEntity.ok(rs);
+    }
+    
+    //Distribution of payment
+    private void distributePayment(Order order){
+
+        double amount = order.getFinalAmount();
+
+        Restaurant restaurant = order.getRestaurant();
+
+        DeliveryPartner dp = order.getDeliveryPartner();
+
+        double platformCommission = amount * 0.20;
+
+        double restaurantShare = amount * 0.70;
+
+        double deliveryPartnerShare = amount * 0.10;
+
+        restaurant.setWallet(
+                restaurant.getWallet() + restaurantShare
+        );
+
+        if(dp != null){
+
+            dp.setRating(dp.getRating()); // optional update
+
+        }
+
+        restaurantRepo.save(restaurant);
+    }
+    
+    //Restoring the cart item if the Payment fails
+    private void restoreCart(Customer customer,Order order){
+
+        List<Item> items = order.getItems();
+
+        for(Item item : items){
+
+            CartItem ci = new CartItem();
+
+            ci.setItem(item);
+
+            ci.setQuantity(1);
+
+            customer.getCart().add(ci);
+        }
+
+        customerRepo.save(customer);
+    }
+    
+    // Cancel Order
+    public ResponseEntity<ResponceStructure<String>> cancelOrder(
+            long mobno,
+            int orderid){
+
+        Customer customer = customerRepo.findByMobno(mobno)
+                .orElseThrow(() ->
+                        new CustomerNotFoundException("Customer not found"));
+
+        Order order = orderRepo.findById(orderid)
+                .orElseThrow(() ->
+                        new OrderNotFoundException("Order not found"));
+
+        if(order.getStatus().equals("ORDER_ON_THE_WAY")
+                || order.getStatus().equals("ARRIVING")
+                || order.getStatus().equals("AT_DOORSTEP")){
+
+            double penalty = order.getFinalAmount()*0.5;
+
+            customer.setPenalty(
+                    customer.getPenalty()+penalty);
+        }
+
+        order.setStatus("CANCELLED");
 
         orderRepo.save(order);
         customerRepo.save(customer);
@@ -397,12 +457,11 @@ public class CustomerService {
         ResponceStructure<String> rs = new ResponceStructure<>();
 
         rs.setStatusCode(200);
-        rs.setMessage("Order Cancelled Successfully");
+        rs.setMessage("Order Cancelled");
         rs.setData("CANCELLED");
 
         return ResponseEntity.ok(rs);
     }
-    
     // Search Restaurant or Item
     public ResponseEntity<ResponceStructure<List<Restaurant>>> searchItemOrRestaurant(long mobno,String searchkey){
 

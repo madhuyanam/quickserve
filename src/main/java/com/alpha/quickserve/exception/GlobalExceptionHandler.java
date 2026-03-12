@@ -180,6 +180,31 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(rs,HttpStatus.BAD_REQUEST);
     }
+    
+   //Payment fail 
+        @ExceptionHandler(PaymentFailedException.class)
+        public ResponseEntity<String> handlePaymentFailed(
+                PaymentFailedException ex){
+
+            return new ResponseEntity<>(ex.getMessage(),
+                    HttpStatus.BAD_REQUEST);
+        }
+        @ExceptionHandler(CodNotAllowedException.class)
+        public ResponseEntity<String> handleCodNotAllowed(
+                PaymentFailedException ex){
+
+            return new ResponseEntity<>(ex.getMessage(),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(PaymentProcessingException.class)
+        public ResponseEntity<String> handlePaymentError(
+                PaymentProcessingException ex){
+
+            return new ResponseEntity<>(ex.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    
 
 	// Generic Exception
 	@ExceptionHandler(Exception.class)

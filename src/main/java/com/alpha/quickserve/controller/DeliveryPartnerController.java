@@ -87,12 +87,6 @@ public class DeliveryPartnerController {
 	    }
 
 	 
-	 @PostMapping("/deliverorder")
-	    public ResponseEntity<ResponceStructure<String>> deliverOrder(
-	            @RequestParam int orderid,
-	            @RequestParam int otp){
-
-	        return deliveryPartnerService.deliverOrder(orderid,otp);
-	    }
+	 
 	
 }
