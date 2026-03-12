@@ -167,7 +167,4 @@ public class Restaurant {
 				+ ", ratings=" + ratings + ", description=" + description + ", packagingFee=" + packagingFee + ", type="
 				+ type + ", menuItems=" + menuItems + ", orders=" + orders + ", address=" + address + "]";
 	}
-
-
-
 }

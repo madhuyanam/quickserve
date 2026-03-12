@@ -171,5 +171,19 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(rs,HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    //Penalty
+    @ExceptionHandler(PenaltyException.class)
+    public ResponseEntity<ResponceStructure<String>> handlePenaltyException(
+            PenaltyException ex){
+
+        ResponceStructure<String> rs = new ResponceStructure<>();
+
+        rs.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        rs.setMessage("Penalty Applied");
+        rs.setData(ex.getMessage());
+
+        return new ResponseEntity<>(rs,HttpStatus.BAD_REQUEST);
+    }
 
 }

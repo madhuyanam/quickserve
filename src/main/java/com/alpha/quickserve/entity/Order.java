@@ -43,6 +43,7 @@ public class Order {
 	@JoinColumn(name = "payment_id")
 	private Payment payment;
 	
+	
 	private String estimatedTime;
 	private int distance;
 	private String specialRequest;

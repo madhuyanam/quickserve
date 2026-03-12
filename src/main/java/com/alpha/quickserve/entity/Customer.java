@@ -40,6 +40,8 @@ public class Customer {
 	@OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private List<CartItem> cart = new ArrayList<>();
+	
+	
 
 	public int getId() {
 		return id;
@@ -96,7 +98,8 @@ public class Customer {
 	public void setCart(List<CartItem> cart) {
 		this.cart = cart;
 	}
-
+	
+	
 	public Customer(int id, String name, long mobno, String mailid, String gender, Address address, List<Order> order,
 			List<Item> item, List<CartItem> cart) {
 		super();
