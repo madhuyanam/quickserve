@@ -72,15 +72,20 @@ public class CustomerController {
     }
 
     // Confirm Order
-    @PostMapping("/confirmorder")
-    public ResponseEntity<ResponceStructure<String>> confirmOrder(@RequestParam int orderid){
-        return customerService.confirmPlacingOrder(orderid);
+    @PostMapping("/confirmOrderByCOD")
+    public ResponseEntity<ResponceStructure<String>> confirmOrderByCOD(
+            @RequestParam int orderid){
+
+        return customerService.confirmOrderByCOD(orderid);
     }
 
     // Cancel Order
     @PostMapping("/cancelorder")
-    public ResponseEntity<ResponceStructure<String>> cancelOrder(@RequestParam int orderid){
-        return customerService.denyPlacingOrder(orderid);
+    public ResponseEntity<ResponceStructure<String>> cancelOrder(
+            @RequestParam long mobno,
+            @RequestParam int orderid){
+
+        return customerService.cancelOrder(mobno, orderid);
     }
 
     // Search Restaurant or Item

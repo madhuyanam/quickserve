@@ -174,6 +174,14 @@ public class RestaurantService {
         Order order = orderRepo.findById(orderid)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found"));
 
+        if(!order.getStatus().equals("ORDER_CONFIRMED_BY_CUSTOMER")){
+            throw new RuntimeException("Customer has not confirmed order yet");
+        }
+
+        order.setStatus("ORDER_PLACED");
+
+        orderRepo.save(order);
+
         List<String> nearbyPartners =
                 redisService.findNearbyPartners(latitude,longitude,5.0);
 
@@ -185,7 +193,7 @@ public class RestaurantService {
 
         ResponceStructure<List<String>> rs = new ResponceStructure<>();
         rs.setStatusCode(HttpStatus.OK.value());
-        rs.setMessage("Order sent to nearby delivery partners");
+        rs.setMessage("Order accepted by restaurant and sent to delivery partners");
         rs.setData(nearbyPartners);
 
         return new ResponseEntity<>(rs,HttpStatus.OK);
@@ -272,6 +280,39 @@ public class RestaurantService {
         rs.setData("Removed successfully");
 
         return new ResponseEntity<>(rs,HttpStatus.OK);
+    }
+    
+    //cancel order
+    public ResponseEntity<ResponceStructure<String>> cancelOrder(long mobno,int orderid){
+
+        Restaurant restaurant = restaurantRepo.findByMobno(mobno)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found"));
+
+        Order order = orderRepo.findById(orderid)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
+
+        order.setStatus("CANCELLED");
+
+        double penalty = (order.getFinalAmount()/100)*10;
+
+        restaurant.setPenalty(restaurant.getPenalty()-penalty);
+
+        if(restaurant.getPenalty() <= -1000){
+            restaurant.setStatus("BLOCKED");
+        }
+
+        order.setRestaurant(restaurant);
+
+        restaurantRepo.save(restaurant);
+        orderRepo.save(order);
+
+        ResponceStructure<String> rs = new ResponceStructure<>();
+
+        rs.setStatusCode(200);
+        rs.setMessage("Order Cancelled By Restaurant");
+        rs.setData("Penalty applied : "+penalty);
+
+        return ResponseEntity.ok(rs);
     }
 
 }

@@ -11,19 +11,17 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.alpha.quickserve.dto.DelivaryPartnerDto;
 import com.alpha.quickserve.entity.DeliveryPartner;
 import com.alpha.quickserve.entity.Order;
-
-import com.alpha.quickserve.entity.Restaurant;
 import com.alpha.quickserve.exception.DeliveryPartnerLocationNotFoundException;
 import com.alpha.quickserve.exception.DeliveryPartnerNotFoundException;
+import com.alpha.quickserve.exception.InvalidOrderStateException;
+import com.alpha.quickserve.exception.InvalidOtpException;
 import com.alpha.quickserve.exception.OrderNotFoundException;
 import com.alpha.quickserve.repository.DelivaryPartnerRepository;
 import com.alpha.quickserve.repository.OrderRepository;
 import com.alpha.quickserve.responcestructure.ResponceStructure;
-
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
@@ -43,26 +41,26 @@ public class DeliveryPartnerService {
 
 	public ResponseEntity<ResponceStructure<DeliveryPartner>> register(DelivaryPartnerDto ddto) {
 
-	    DeliveryPartner dp = new DeliveryPartner();
+		DeliveryPartner dp = new DeliveryPartner();
 
-	    dp.setName(ddto.getName());
-	    dp.setMob(ddto.getMob());
-	    dp.setMail(ddto.getMail());
-	    dp.setVehicileno(ddto.getVechileno());
+		dp.setName(ddto.getName());
+		dp.setMob(ddto.getMob());
+		dp.setMail(ddto.getMail());
+		dp.setVehicileno(ddto.getVechileno());
 
-	    // optional default values
-	    dp.setStatus("AVAILABLE");
-	    dp.setRating(0);
+		// optional default values
+		dp.setStatus("AVAILABLE");
+		dp.setRating(0);
 
-	    DeliveryPartner saved = deliveryPartnerRepo.save(dp);
+		DeliveryPartner saved = deliveryPartnerRepo.save(dp);
 
-	    ResponceStructure<DeliveryPartner> rs = new ResponceStructure<>();
+		ResponceStructure<DeliveryPartner> rs = new ResponceStructure<>();
 
-	    rs.setStatusCode(HttpStatus.CREATED.value());
-	    rs.setMessage("Delivery Partner Registered Successfully");
-	    rs.setData(saved);
+		rs.setStatusCode(HttpStatus.CREATED.value());
+		rs.setMessage("Delivery Partner Registered Successfully");
+		rs.setData(saved);
 
-	    return new ResponseEntity<>(rs, HttpStatus.CREATED);
+		return new ResponseEntity<>(rs, HttpStatus.CREATED);
 	}
 
 	// Find
@@ -113,52 +111,31 @@ public class DeliveryPartnerService {
 	}
 
 	// Accept Order
-	public ResponseEntity<ResponceStructure<String>> acceptOrder(Integer orderid, Integer partnerid) {
+	public ResponseEntity<ResponceStructure<String>> acceptOrder(int orderid,int partnerid){
 
-		Order order = orderRepo.findById(orderid)
-				.orElseThrow(() -> new OrderNotFoundException("Order not found"));
+	    Order order = orderRepo.findById(orderid)
+	            .orElseThrow(() -> new OrderNotFoundException("Order not found"));
 
-		DeliveryPartner partner = deliveryPartnerRepo.findById(partnerid)
-				.orElseThrow(() -> new DeliveryPartnerNotFoundException("Partner not found"));
+	    if(!order.getStatus().equals("ORDER_PLACED")){
+	        throw new InvalidOrderStateException("Restaurant has not accepted order");
+	    }
 
-		String lockKey = "order_lock:" + orderid;
+	    DeliveryPartner partner = deliveryPartnerRepo.findById(partnerid)
+	            .orElseThrow(() -> new DeliveryPartnerNotFoundException("Partner not found"));
 
-		Boolean locked = redisTemplate.opsForValue()
-				.setIfAbsent(lockKey, partnerid.toString());
+	    order.setDeliveryPartner(partner);
 
-		String message;
+	    order.setStatus("ORDER_PREPARING");
 
-		if (Boolean.TRUE.equals(locked)) {
+	    orderRepo.save(order);
 
-			// Assign delivery partner
-			order.setDeliveryPartner(partner);
+	    ResponceStructure<String> rs = new ResponceStructure<>();
 
-			// Add order to delivery partner order list
-			if(partner.getOrder() != null){
-				partner.getOrder().add(order);
-			}
+	    rs.setStatusCode(200);
+	    rs.setMessage("Delivery Partner Assigned");
+	    rs.setData("ORDER_PREPARING");
 
-			// Update order status
-			order.setStatus("ASSIGNED");
-
-			orderRepo.save(order);
-
-			// Remove order from other delivery partners
-			redisTemplate.delete("order:" + orderid);
-
-			message = "Order assigned successfully";
-		} 
-		else {
-			message = "Order already taken by another partner";
-		}
-
-		ResponceStructure<String> rs = new ResponceStructure<>();
-
-		rs.setStatusCode(HttpStatus.OK.value());
-		rs.setMessage("Order Response");
-		rs.setData(message);
-
-		return new ResponseEntity<>(rs, HttpStatus.OK);
+	    return ResponseEntity.ok(rs);
 	}
 
 	//get direction from delivery partner to restaurant
@@ -195,11 +172,60 @@ public class DeliveryPartnerService {
 	//get direction from restaurant to customer
 	public void getDirectionToCustomer(double restlat, double restlon, double custlat, double custlong, HttpServletResponse response) throws IOException {
 
-        String getdir="https://www.google.com/maps/dir/?api=1&origin="+restlat+","+restlon+"&destination="+custlat+
-                ","+custlong+"&travelmode=driving";
-        response.sendRedirect(getdir);
-    }
-	
-    
-    
+		String getdir="https://www.google.com/maps/dir/?api=1&origin="+restlat+","+restlon+"&destination="+custlat+
+				","+custlong+"&travelmode=driving";
+		response.sendRedirect(getdir);
+	}
+
+
+	public ResponseEntity<ResponceStructure<String>> pickupOrder(int orderid){
+
+		Order order = orderRepo.findById(orderid)
+				.orElseThrow(() -> new OrderNotFoundException("Order not found"));
+
+		if(!order.getStatus().equals("ORDER_PREPARING")){
+			throw new InvalidOrderStateException("Order not ready for pickup");
+		}
+
+		order.setStatus("ORDER_ON_THE_WAY");
+
+		orderRepo.save(order);
+
+		ResponceStructure<String> rs = new ResponceStructure<>();
+
+		rs.setStatusCode(200);
+		rs.setMessage("Order Picked Successfully");
+		rs.setData("ORDER_ON_THE_WAY");
+
+		return ResponseEntity.ok(rs);
+	}
+
+
+	public ResponseEntity<ResponceStructure<String>> deliverOrder(int orderid,int otp){
+
+		Order order = orderRepo.findById(orderid)
+				.orElseThrow(() -> new OrderNotFoundException("Order not found"));
+
+		if(order.getOtp()!=otp){
+			throw new InvalidOtpException("Invalid OTP");
+		}
+
+		if(!order.getStatus().equals("ORDER_ON_THE_WAY")){
+			throw new InvalidOrderStateException("Order cannot be delivered now");
+		}
+
+		order.setStatus("ORDER_DELIVERED");
+
+		orderRepo.save(order);
+
+		ResponceStructure<String> rs = new ResponceStructure<>();
+
+		rs.setStatusCode(200);
+		rs.setMessage("Order Delivered Successfully");
+		rs.setData("ORDER_DELIVERED");
+
+		return ResponseEntity.ok(rs);
+	}
+
+
 }
