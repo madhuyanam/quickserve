@@ -206,33 +206,6 @@ public class DeliveryPartnerService {
 
 		return ResponseEntity.ok(rs);
 	}
-
-
-//	public ResponseEntity<ResponceStructure<String>> deliverOrder(int orderid,int otp){
-//
-//		Order order = orderRepo.findById(orderid)
-//				.orElseThrow(() -> new OrderNotFoundException("Order not found"));
-//
-//		if(order.getOtp()!=otp){
-//			throw new InvalidOtpException("Invalid OTP");
-//		}
-//
-//		if(!order.getStatus().equals("ORDER_ON_THE_WAY")){
-//			throw new InvalidOrderStateException("Order cannot be delivered now");
-//		}
-//
-//		order.setStatus("ORDER_DELIVERED");
-//
-//		orderRepo.save(order);
-//
-//		ResponceStructure<String> rs = new ResponceStructure<>();
-//
-//		rs.setStatusCode(200);
-//		rs.setMessage("Order Delivered Successfully");
-//		rs.setData("ORDER_DELIVERED");
-//
-//		return ResponseEntity.ok(rs);
-//	}
 	
 	//Successful deliavry
 	public ResponseEntity<ResponceStructure<String>> successfulDelivery(
