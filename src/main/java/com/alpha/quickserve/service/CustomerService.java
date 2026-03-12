@@ -27,6 +27,7 @@ import com.alpha.quickserve.exception.CouponInvalidException;
 import com.alpha.quickserve.exception.CouponLimitExceededException;
 import com.alpha.quickserve.exception.CouponNotFoundException;
 import com.alpha.quickserve.exception.CustomerNotFoundException;
+import com.alpha.quickserve.exception.InvalidOrderStateException;
 import com.alpha.quickserve.exception.ItemNotFoundException;
 import com.alpha.quickserve.exception.OrderNotFoundException;
 import com.alpha.quickserve.exception.RestaurantNotFoundException;
@@ -176,6 +177,7 @@ public class CustomerService {
             throw new CartEmptyException("Cart is empty");
         }
 
+        // restaurant from first cart item
         Restaurant restaurant =
                 customer.getCart().get(0).getItem().getRestaurant();
 
@@ -191,6 +193,7 @@ public class CustomerService {
 
         double tax = itemCost * 0.05;
 
+        // distance calculation
         double distance = DistanceCalculation.calculateDistance(
                 restaurant.getAddress().getLatitude(),
                 restaurant.getAddress().getLongitude(),
@@ -211,11 +214,12 @@ public class CustomerService {
 
         Coupon coupon = null;
 
-        // Apply coupon if provided
+        // COUPON LOGIC
         if(couponId != null){
 
             coupon = couponRepo.findById(couponId)
-                    .orElseThrow(() -> new CouponNotFoundException("Coupon not found"));
+                    .orElseThrow(() ->
+                            new CouponNotFoundException("Coupon not found"));
 
             if(LocalDate.now().isAfter(coupon.getExpiryDate())){
                 throw new CouponExpiredException("Coupon expired");
@@ -245,20 +249,38 @@ public class CustomerService {
             totalCost = totalCost - discount;
         }
 
+        // CREATE ORDER
         Order order = new Order();
 
         order.setCustomer(customer);
+
         order.setRestaurant(restaurant);
+
+        // pickup address (restaurant)
+        order.setPickupaddress(
+                restaurant.getAddress().getStreet() + ", " +
+                restaurant.getAddress().getCity()
+        );
+
+        // delivery address (customer)
+        order.setDeliveryAddress(
+                customer.getAddress().getStreet() + ", " +
+                customer.getAddress().getCity()
+        );
+
         order.setSpecialRequest(specialRequest);
+
         order.setStatus("WAITING_FOR_CONSENT");
 
         order.setOriginalAmount(itemCost);
+
         order.setDiscountAmount(discount);
+
         order.setFinalAmount(totalCost);
 
         order.setCoupon(coupon);
 
-        order.setCost((int) totalCost);
+        order.setCost(totalCost);
 
         Order savedOrder = orderRepo.save(order);
 
@@ -266,74 +288,119 @@ public class CustomerService {
         if(coupon != null){
 
             coupon.setMaxCoupons(coupon.getMaxCoupons() - 1);
+
             couponRepo.save(coupon);
 
             CouponRedemption cr = new CouponRedemption();
 
             cr.setCoupon(coupon);
+
             cr.setCustomer(customer);
+
             cr.setOrder(savedOrder);
 
             couponRedemptionRepo.save(cr);
         }
 
+        // RESPONSE DTO
         OrderNeedConsentDto dto = new OrderNeedConsentDto();
 
         dto.setOrderId(savedOrder.getId());
+
         dto.setRestaurantName(restaurant.getName());
+
         dto.setItemCost(itemCost);
+
         dto.setPackagingFees(packagingFees);
+
         dto.setPlatformFees(platformFees);
+
         dto.setTax(tax);
+
         dto.setDeliveryCharges(deliveryCharges);
+
         dto.setDistance(distance);
+
         dto.setTotalCost(totalCost);
 
         ResponceStructure<OrderNeedConsentDto> rs =
                 new ResponceStructure<>();
 
         rs.setStatusCode(HttpStatus.CREATED.value());
+
         rs.setMessage("Order created - waiting for customer consent");
+
         rs.setData(dto);
 
         return new ResponseEntity<>(rs,HttpStatus.CREATED);
     }
 
  // Confirm Order
-    public ResponseEntity<ResponceStructure<String>> confirmPlacingOrder(int orderid){
+    public ResponseEntity<ResponceStructure<String>> confirmOrderByCOD(int orderid){
 
         Order order = orderRepo.findById(orderid)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found"));
 
-        // Order status change
-        order.setStatus("PLACED");
+        if(!order.getStatus().equals("WAITING_FOR_CONSENT")){
+            throw new InvalidOrderStateException("Order cannot be confirmed now");
+        }
+
+        // ensure payment type is COD
+        if(order.getPayment()!=null &&
+           !order.getPayment().getType().equalsIgnoreCase("COD")){
+            throw new RuntimeException("Only COD orders require confirmation");
+        }
+
+        order.setStatus("ORDER_CONFIRMED_BY_CUSTOMER");
 
         orderRepo.save(order);
 
         ResponceStructure<String> rs = new ResponceStructure<>();
 
         rs.setStatusCode(HttpStatus.OK.value());
-        rs.setMessage("Order Confirmed Successfully");
-        rs.setData("Order placed successfully");
+        rs.setMessage("COD Order Confirmed Successfully");
+        rs.setData("ORDER_CONFIRMED_BY_CUSTOMER");
 
-        return new ResponseEntity<>(rs, HttpStatus.OK);
+        return new ResponseEntity<>(rs,HttpStatus.OK);
     }
     
     // Cancel Order
-    public ResponseEntity<ResponceStructure<String>> denyPlacingOrder(int orderid){
+    public ResponseEntity<ResponceStructure<String>> cancelOrder(long mobno,int orderid){
+
+        Customer customer = customerRepo.findByMobno(mobno)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 
         Order order = orderRepo.findById(orderid)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found"));
 
-        order.setStatus("CANCELLED");
+        if(order.getDeliveryPartner()==null){
+
+            order.setStatus("CANCELLED");
+
+            if(order.getPayment()!=null &&
+               order.getPayment().getType().equalsIgnoreCase("ONLINE")){
+
+                customer.setWallet(customer.getWallet()+order.getFinalAmount());
+            }
+
+        }
+        else{
+
+            customer.setPenalty(customer.getPenalty()+order.getFinalAmount());
+
+            order.setStatus("CANCELLED");
+        }
+
         orderRepo.save(order);
+        customerRepo.save(customer);
 
         ResponceStructure<String> rs = new ResponceStructure<>();
-        rs.setStatusCode(HttpStatus.OK.value());
-        rs.setMessage("Order Cancelled");
-        rs.setData("Cancelled");
 
-        return new ResponseEntity<>(rs,HttpStatus.OK);
+        rs.setStatusCode(200);
+        rs.setMessage("Order Cancelled Successfully");
+        rs.setData("CANCELLED");
+
+        return ResponseEntity.ok(rs);
     }
     
     // Search Restaurant or Item

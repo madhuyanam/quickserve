@@ -78,5 +78,21 @@ public class DeliveryPartnerController {
 	                                   ,@RequestParam double custlong,HttpServletResponse response) throws IOException {
 	         deliveryPartnerService.getDirectionToCustomer(restlat,restlon,custlat,custlong,response);
 	    }
+	 
+	 @PostMapping("/pickuporder")
+	    public ResponseEntity<ResponceStructure<String>> pickupOrder(
+	            @RequestParam int orderid){
+
+	        return deliveryPartnerService.pickupOrder(orderid);
+	    }
+
+	 
+	 @PostMapping("/deliverorder")
+	    public ResponseEntity<ResponceStructure<String>> deliverOrder(
+	            @RequestParam int orderid,
+	            @RequestParam int otp){
+
+	        return deliveryPartnerService.deliverOrder(orderid,otp);
+	    }
 	
 }

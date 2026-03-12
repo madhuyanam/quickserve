@@ -40,8 +40,9 @@ public class Customer {
 	@OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private List<CartItem> cart = new ArrayList<>();
-	
-	
+
+	private double penalty;
+    private double wallet;
 
 	public int getId() {
 		return id;
@@ -49,59 +50,64 @@ public class Customer {
 	public void setId(int id) {
 		this.id = id;
 	}
-
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public long getMobno() {
+	public Long getMobno() {
 		return mobno;
 	}
-	public void setMobno(long mobno) {
+	public void setMobno(Long mobno) {
 		this.mobno = mobno;
 	}
-
 	public String getMailid() {
 		return mailid;
 	}
 	public void setMailid(String mailid) {
 		this.mailid = mailid;
 	}
-
 	public String getGender() {
 		return gender;
 	}
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-
 	public Address getAddress() {
 		return address;
 	}
 	public void setAddress(Address address) {
 		this.address = address;
 	}
-
-	public List<Order> getOrder() {
+	public List<Order> getOrders() {
 		return orders;
 	}
-	public void setOrder(List<Order> order) {
-		this.orders = order;
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
-
 	public List<CartItem> getCart() {
 		return cart;
 	}
 	public void setCart(List<CartItem> cart) {
 		this.cart = cart;
 	}
-	
-	
-	public Customer(int id, String name, long mobno, String mailid, String gender, Address address, List<Order> order,
-			List<Item> item, List<CartItem> cart) {
+
+	public double getPenalty() {
+		return penalty;
+	}
+	public void setPenalty(double penalty) {
+		this.penalty = penalty;
+	}
+	public double getWallet() {
+		return wallet;
+	}
+	public void setWallet(double wallet) {
+		this.wallet = wallet;
+	}
+	public Customer(int id, String name, Long mobno, String mailid, String gender, Address address, List<Order> orders,
+			List<CartItem> cart, double penalty, double wallet) {
+
 		super();
 		this.id = id;
 		this.name = name;
@@ -109,18 +115,21 @@ public class Customer {
 		this.mailid = mailid;
 		this.gender = gender;
 		this.address = address;
-		this.orders = order;
+		this.orders = orders;
 		this.cart = cart;
+		this.penalty = penalty;
+		this.wallet = wallet;
 	}
-
 	public Customer() {
 		super();
 	}
-
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", name=" + name + ", mobno=" + mobno + ", mailid=" + mailid + ", gender="
-				+ gender + ", address=" + address + ", order=" + orders + ", cart=" + cart + "]";
+				+ gender + ", address=" + address + ", orders=" + orders + ", cart=" + cart + ", penalty=" + penalty
+				+ ", wallet=" + wallet + "]";
 	}
+
+	
 
 }
