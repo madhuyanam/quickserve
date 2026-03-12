@@ -100,5 +100,14 @@ public class RestaurantController {
 
         return restaurantService.updateItemDetails(mobno,itemid,item);
     }
+   
+    //cancel order
+    @PostMapping("/cancelorder")
+    public ResponseEntity<ResponceStructure<String>> cancelOrder(
+            @RequestParam long mobno,
+            @RequestParam int orderid){
+
+        return restaurantService.cancelOrder(mobno,orderid);
+    }
 
 }
